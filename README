@@ -1,0 +1,5 @@
+This project intends to accomplish the next goal:
+
+"
+Design an extensible crawling and extraction system that can provide prices from chilean stores that can be comparable defined by an user input, supporting different strategies of discovering, verification, navegation and control of execution, with the ability to evolve to other search engines
+"
