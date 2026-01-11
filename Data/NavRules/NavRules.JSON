@@ -1,0 +1,76 @@
+{
+    "NavRules": [
+        {
+            "AssociatedSource": "MERCADOLIBRE",
+            "NavType": "search",
+            "SubDomain": "listado",
+            "UrlTemplate": "https://listado.mercadolibre.cl/{search}",
+            "QueryParamMapping": {
+                "search": {
+                    "location": "path",
+                    "transform": "slug"
+                },
+                "page": {
+                    "location": "query",
+                    "param": [{
+                        "_desde": {
+                            "type": "offset",
+                            "defaultValue": 48
+                        }
+                    }]
+                }
+            },
+            "Selectors": "a.ui-search-item__group__element",
+            "PaginationType": "page",
+            "StartPage": 1,
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "MERCADOLIBRE",
+            "NavType": "product",
+            "SubDomain": "www",
+            "Selectors": "a.ui-search-link"
+        },
+        {
+            "AssociatedSource": "FALABELLA",
+            "NavType": "search",
+            "SubDomain": "www",
+            "UrlTemplate": "https://www.falabella.com/falabella-cl/search",
+            "QueryParamMapping": {
+                "search": {
+                    "location": "query",
+                    "transform": "urlencode",
+                    "param": "Ntt"
+                },
+                "page": {
+                    "location": "query",
+                    "param": [{
+                        "page": {
+                            "type": "page",
+                            "defaultValue": 1
+                        }
+                    }]
+                }
+            },
+            "Selectors": "a[data-testid='product-link']",
+            "PaginationType": "page",
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "FALABELLA",
+            "NavType": "category",
+            "Context": "listing_page",
+            "SubDomain": "www",
+            "UrlPattern": "^/falabella-cl/category/",
+            "Selectors": "a[data-testid='product-link']"
+        },
+        {
+            "AssociatedSource": "FALABELLA",
+            "NavType": "product",
+            "Context": "product_page",
+            "SubDomain": "www",
+            "UrlPattern": "^/falabella-cl/product/[0-9]+/",
+            "Selectors": null
+        }
+    ]
+}

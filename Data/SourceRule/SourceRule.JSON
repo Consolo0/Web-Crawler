@@ -1,0 +1,68 @@
+{
+    "SourceRule" : [
+        {
+            "ID" : "MERCADOLIBREProductTitle",
+            "AssociatedSource" : "MERCADOLIBRE",
+            "EntityType" : "ProductTitle",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "MERCADOLIBREPrice",
+            "AssociatedSource" : "MERCADOLIBRE",
+            "EntityType" : "Price",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "MERCADOLIBREStock",
+            "AssociatedSource" : "MERCADOLIBRE",
+            "EntityType" : "Stock",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "MERCADOLIBRERating",
+            "AssociatedSource" : "MERCADOLIBRE",
+            "EntityType" : "Rating",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+                {
+            "ID" : "FALABELLAProductTitle",
+            "AssociatedSource" : "FALABELLA",
+            "EntityType" : "ProductTitle",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "FALABELLAPrice",
+            "AssociatedSource" : "FALABELLA",
+            "EntityType" : "Price",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "FALABELLASTock",
+            "AssociatedSource" : "FALABELLA",
+            "EntityType" : "Stock",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "FALABELLARating",
+            "AssociatedSource" : "FALABELLA",
+            "EntityType" : "Rating",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        }
+    ]
+}

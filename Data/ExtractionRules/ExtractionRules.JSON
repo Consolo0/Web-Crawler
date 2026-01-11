@@ -1,0 +1,44 @@
+{
+    "ExtractionRules": [
+        {
+            "AssociatedSourceRule": "MERCADOLIBREProductTitle",
+            "Selector": "h1.ui-pdp-title",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "MERCADOLIBREPrice",
+            "Selector": "span.andes-money-amount__fraction",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "MERCADOLIBREStock",
+            "Selector": "span.ui-pdp-action-row__subtitle",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "MERCADOLIBRERating",
+            "Selector": "span.ui-review-capability__rating__average",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "FALABELLAProductTitle",
+            "Selector": "h1.fa--product-name",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "FALABELLAPrice",
+            "Selector": "div[class*='price'] span",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "FALABELLASTock",
+            "Selector": "div.add-quantity-container p",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "FALABELLARating",
+            "Selector": "div[class^='_bv-summary-rating'] span",
+            "Attribute": "text"
+        }
+    ]
+}

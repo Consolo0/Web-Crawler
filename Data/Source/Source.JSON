@@ -1,0 +1,18 @@
+{
+    "Sources": [
+        {
+        "ID": "MERCADOLIBRE",
+        "Name": "Mercado Libre",
+        "Domain": "mercadolibre.cl",
+        "IsActive": true,
+        "RequireJS": false
+        },
+        {
+            "ID": "FALABELLA",
+            "Name": "Falabella",
+            "Domain": "falabella.com",
+            "IsActive": true,
+            "RequireJS": true
+        }
+    ]
+} 

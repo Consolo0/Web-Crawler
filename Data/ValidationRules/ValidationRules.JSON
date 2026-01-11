@@ -1,0 +1,29 @@
+{
+    "ValidationRules": [
+        {
+            "AssociatedSource": "MERCADOLIBRE",
+            "AllowedSubDomains": ["www", "listado", "articulo"],
+            "AllowedDomain": ["mercadolibre.cl"],
+            "AllowedPaths": [
+                "^/$",
+                "^/p/",
+                "^/MLC-",
+                "^/MLC"
+            ],
+            "FollowPagination": true,
+            "MaxDepthOverride": 5
+        },
+        {
+            "AssociatedSource": "FALABELLA",
+            "AllowedSubDomains": ["www"],
+            "AllowedDomain": ["falabella.com"],
+            "AllowedPaths": [
+                "^/falabella-cl/search",
+                "^/falabella-cl/category/",
+                "^/falabella-cl/product/"
+            ],
+            "FollowPagination": true,
+            "MaxDepthOverride": 3
+        }
+    ]
+}
