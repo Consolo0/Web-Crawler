@@ -24,6 +24,18 @@
             ],
             "FollowPagination": true,
             "MaxDepthOverride": 3
+        },
+        {
+            "AssociatedSource": "PARIS",
+            "AllowedSubDomains": ["www"],
+            "AllowedDomain": ["paris.cl"],
+            "AllowedPaths": [
+                "^/search$",
+                "^/.+\\.html$",
+                "^/(?!search$|cart|checkout|login|mi-cuenta)[^?]+/$"
+            ],
+            "FollowPagination": true,
+            "MaxDepthOverride": 3
         }
     ]
 }

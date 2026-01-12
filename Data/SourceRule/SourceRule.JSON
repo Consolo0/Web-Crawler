@@ -32,7 +32,7 @@
             "Priority" : 1,
             "IsFallback" : false
         },
-                {
+        {
             "ID" : "FALABELLAProductTitle",
             "AssociatedSource" : "FALABELLA",
             "EntityType" : "ProductTitle",
@@ -59,6 +59,46 @@
         {
             "ID" : "FALABELLARating",
             "AssociatedSource" : "FALABELLA",
+            "EntityType" : "Rating",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "PARISProductTitle",
+            "AssociatedSource" : "PARIS",
+            "EntityType" : "ProductTitle",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "PARISPrice",
+            "AssociatedSource" : "PARIS",
+            "EntityType" : "Price",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "PARISPriceSecondFallBack",
+            "AssociatedSource" : "PARIS",
+            "EntityType" : "Price",
+            "Context" : "product_page",
+            "Priority" : 2,
+            "IsFallback" : true
+        },
+        {
+            "ID" : "PARISSTock",
+            "AssociatedSource" : "PARIS",
+            "EntityType" : "Stock",
+            "Context" : "product_page",
+            "Priority" : 1,
+            "IsFallback" : false
+        },
+        {
+            "ID" : "PARISRating",
+            "AssociatedSource" : "PARIS",
             "EntityType" : "Rating",
             "Context" : "product_page",
             "Priority" : 1,

@@ -13,6 +13,13 @@
             "Domain": "falabella.com",
             "IsActive": true,
             "RequireJS": true
+        },
+        {
+            "ID": "PARIS",
+            "Name": "Paris",
+            "Domain": "paris.cl",
+            "IsActive": true,
+            "RequireJS": true
         }
     ]
 } 

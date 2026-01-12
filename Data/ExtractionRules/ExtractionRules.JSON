@@ -39,6 +39,31 @@
             "AssociatedSourceRule": "FALABELLARating",
             "Selector": "div[class^='_bv-summary-rating'] span",
             "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "PARISProductTitle",
+            "Selector": "h1[class*='ui-text-h1']",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "PARISPrice",
+            "Selector": "h2[class*='ui-text-subtitle']",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "PARISPriceSecondFallBack",
+            "Selector": "span[class*='ui-text-body']",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "PARISStock",
+            "Selector": "div[class*='stock'] p",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "PARISRating",
+            "Selector": "button[data-testid='star-rating-rating-value']",
+            "Attribute": "text"
         }
     ]
 }

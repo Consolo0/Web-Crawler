@@ -71,6 +71,46 @@
             "SubDomain": "www",
             "UrlPattern": "^/falabella-cl/product/[0-9]+/",
             "Selectors": null
+        },
+        {
+            "AssociatedSource": "PARIS",
+            "NavType": "search",
+            "SubDomain": "www",
+            "UrlTemplate": "https://www.paris.cl/search",
+            "QueryParamMapping": {
+                "search": {
+                    "location": "query",
+                    "transform": "urlencode",
+                    "param": "q"
+                },
+                "page": {
+                    "location": "query",
+                    "param": [{
+                        "page": {
+                            "type": "page",
+                            "defaultValue": 1
+                        }
+                    }]
+                }
+            },
+            "Selectors": "a[href$='.html']",
+            "PaginationType": "page",
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "PARIS",
+            "NavType": "category",
+            "SubDomain": "www",
+            "Selectors": "a[href$='.html']",
+            "PaginationType": "page",
+            "StartPage": 1,
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "PARIS",
+            "NavType": "product",
+            "SubDomain": "www",
+            "Selectors": null
         }
     ]
 }
