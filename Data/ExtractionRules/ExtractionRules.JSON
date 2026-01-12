@@ -79,6 +79,26 @@
             "AssociatedSourceRule": "RIPLERating",
             "Selector": "span.pr-reco-value",
             "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "LIDERProductTitle",
+            "Selector": "h1#main-title[itemprop='name']",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "LIDERPrice",
+            "Selector": "span[itemprop='price'][data-fs-element='price']",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "LIDERRating",
+            "Selector": "span.rating-number",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "LIDERStock",
+            "Selector": "button[data-fs-element='add-to-cart'], button:contains('Agregar')",
+            "Attribute": "existence"
         }
     ]
 }

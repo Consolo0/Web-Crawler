@@ -154,6 +154,48 @@
             "NavType": "product",
             "SubDomain": "simple",
             "Selectors": "section.product-header h1"
+        },
+        {
+            "AssociatedSource": "LIDER",
+            "NavType": "search",
+            "SubDomain": "www",
+            "UrlTemplate": "https://www.lider.cl/supermercado/search",
+            "QueryParamMapping": {
+                "search": {
+                    "location": "query",
+                    "transform": "urlencode",
+                    "param": "q"
+                },
+                "page": {
+                    "location": "query",
+                    "param": [{
+                        "page": {
+                            "type": "page",
+                            "defaultValue": 1
+                        }
+                    }]
+                }
+            },
+            "Selectors": "a[href*='/p/']",
+            "PaginationType": "page",
+            "StartPage": 1,
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "LIDER",
+            "NavType": "category",
+            "SubDomain": "www",
+            "UrlTemplate": "https://www.lider.cl/supermercado/category/{category}",
+            "Selectors": "a[href*='/p/']",
+            "PaginationType": "page",
+            "StartPage": 1,
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "LIDER",
+            "NavType": "product",
+            "SubDomain": "www",
+            "Selectors": "h1"
         }
     ]
 }

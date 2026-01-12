@@ -27,6 +27,13 @@
             "BaseDomain": "ripley.cl",
             "IsActive": true,
             "RequireJS": true
+        },
+        {
+            "ID": "LIDER",
+            "Name": "Lider",
+            "Domain": "lider.cl",
+            "IsActive": true,
+            "RequireJS": false
         }
     ]
 } 

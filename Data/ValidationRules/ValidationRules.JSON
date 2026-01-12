@@ -48,6 +48,19 @@
             ],
             "FollowPagination": true,
             "MaxDepthOverride": 3
+        },
+        {
+            "AssociatedSource": "LIDER",
+            "AllowedSubDomains": ["www"],
+            "AllowedDomain": ["lider.cl"],
+            "AllowedPaths": [
+                "^/supermercado/search",
+                "^/supermercado/category/",
+                "^/supermercado/product/",
+                "^/supermercado/.*/p"
+            ],
+            "FollowPagination": true,
+            "MaxDepthOverride": 3
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "SourceRule" : [
+    "SourceRules" : [
         {
             "ID" : "MERCADOLIBREProductTitle",
             "AssociatedSource" : "MERCADOLIBRE",
@@ -131,6 +131,38 @@
         {
             "ID": "RIPLEYRating",
             "AssociatedSource": "RIPLEY",
+            "EntityType": "Rating",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": false
+        },
+        {
+            "ID": "LIDERProductTitle",
+            "AssociatedSource": "LIDER",
+            "EntityType": "Product Title",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": false
+        },
+        {
+            "ID": "LIDERPrice",
+            "AssociatedSource": "LIDER",
+            "EntityType": "Price",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": false
+        },
+        {
+            "ID": "LIDERStock",
+            "AssociatedSource": "LIDER",
+            "EntityType": "Stock",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": true
+        },
+        {
+            "ID": "LIDERRating",
+            "AssociatedSource": "LIDER",
             "EntityType": "Rating",
             "Context": "product_page",
             "Priority": 1,
