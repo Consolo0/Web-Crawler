@@ -36,6 +36,18 @@
             ],
             "FollowPagination": true,
             "MaxDepthOverride": 3
+        },
+        {
+            "AssociatedSource": "RIPLEY",
+            "AllowedSubDomains": ["simple"],
+            "AllowedDomain": ["ripley.cl"],
+            "AllowedPaths": [
+                "^/search/",
+                "^/product/",
+                "^/[a-z0-9-]+$"
+            ],
+            "FollowPagination": true,
+            "MaxDepthOverride": 3
         }
     ]
 }

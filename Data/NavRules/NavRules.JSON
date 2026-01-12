@@ -111,6 +111,49 @@
             "NavType": "product",
             "SubDomain": "www",
             "Selectors": null
+        },
+        {
+            "AssociatedSource": "RIPLEY",
+            "NavType": "search",
+            "SubDomain": "simple",
+            "UrlTemplate": "https://simple.ripley.cl/search/{search}",
+            "QueryParamMapping": {
+                "search": {
+                    "location": "path",
+                    "transform": "urlencode"
+                },
+                "page": {
+                    "location": "query",
+                    "param": [
+                        {
+                        "page": {
+                            "type": "page",
+                            "defaultValue": 1
+                            }
+                        }
+                    ]
+                }
+            },
+            "Selectors": "a[href*='/product/']",
+            "PaginationType": "page",
+            "StartPage": 1,
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "RIPLEY",
+            "NavType": "category",
+            "SubDomain": "simple",
+            "UrlTemplate": "https://simple.ripley.cl/{category}",
+            "Selectors": "a[href$='p']:not([href*='cart']):not([href*='login'])",
+            "PaginationType": "page",
+            "StartPage": 1,
+            "MaxPages": 5
+        },
+        {
+            "AssociatedSource": "RIPLEY",
+            "NavType": "product",
+            "SubDomain": "simple",
+            "Selectors": "section.product-header h1"
         }
     ]
 }

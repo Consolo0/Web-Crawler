@@ -20,6 +20,13 @@
             "Domain": "paris.cl",
             "IsActive": true,
             "RequireJS": true
+        },
+        {
+            "ID": "RIPLEY",
+            "Name": "Ripley Chile",
+            "BaseDomain": "ripley.cl",
+            "IsActive": true,
+            "RequireJS": true
         }
     ]
 } 

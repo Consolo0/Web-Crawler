@@ -103,6 +103,38 @@
             "Context" : "product_page",
             "Priority" : 1,
             "IsFallback" : false
+        },
+        {
+            "ID": "RIPLEYProductTitle",
+            "AssociatedSource": "RIPLEY",
+            "EntityType": "Product Title",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": false
+        },
+        {
+            "ID": "RIPLEYPrice",
+            "AssociatedSource": "RIPLEY",
+            "EntityType": "Price",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": false
+        },
+        {
+            "ID": "RIPLEYStock",
+            "AssociatedSource": "RIPLEY",
+            "EntityType": "Stock",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": true
+        },
+        {
+            "ID": "RIPLEYRating",
+            "AssociatedSource": "RIPLEY",
+            "EntityType": "Rating",
+            "Context": "product_page",
+            "Priority": 1,
+            "IsFallback": false
         }
     ]
 }

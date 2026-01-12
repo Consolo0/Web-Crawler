@@ -64,6 +64,21 @@
             "AssociatedSourceRule": "PARISRating",
             "Selector": "button[data-testid='star-rating-rating-value']",
             "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "RIPLEYProductTitle",
+            "Selector": "section.product-header h1",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "RIPLEYPrice",
+            "Selector": "dt.product-price",
+            "Attribute": "text"
+        },
+        {
+            "AssociatedSourceRule": "RIPLERating",
+            "Selector": "span.pr-reco-value",
+            "Attribute": "text"
         }
     ]
 }
