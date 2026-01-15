@@ -1,0 +1,37 @@
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+from dataclasses import is_dataclass, asdict
+from Error import MissingData, NotExpectedType
+
+class Db:
+    def __init__(self):
+        self.db = self.connect()
+
+    def connect(self):
+        load_dotenv()
+
+        DB_NAME = os.getenv("CLUSTER_NAME")
+        USER = os.getenv("ADMIN_DB_USERNAME")
+        PASSWORD = os.getenv("ADMIN_DB_PASSWORD")
+        HOST = os.getenv("MONGO_HOST")
+        MONGO_URI = (
+            f"mongodb+srv://{USER}:{PASSWORD}@{HOST}/"
+            f"?retryWrites=true&w=majority&appName={DB_NAME}"
+        )
+
+        if not MONGO_URI or not DB_NAME:
+            raise MissingData("Faltan variables en el .env")
+
+        client = MongoClient(MONGO_URI)
+        db = client[DB_NAME]
+        return db
+    
+    def save(self, data, collection_name=None) -> bool:
+        if not is_dataclass(data):
+            raise NotExpectedType("dataclass", type(data), "Data must be an instance of a class")
+
+        collection = self.db[collection_name] if collection_name else self.db[data.__class__.__name__]
+        document = asdict(data)
+        result = collection.insert_one(document)
+        return result.acknowledged
