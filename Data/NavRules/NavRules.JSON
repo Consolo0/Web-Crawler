@@ -4,7 +4,7 @@
             "AssociatedSource": "MERCADOLIBRE",
             "NavType": "search",
             "SubDomain": "listado",
-            "UrlTemplate": "https://listado.mercadolibre.cl/{search}",
+            "UrlTemplate": "https://listado.mercadolibre.cl",
             "QueryParamMapping": {
                 "search": {
                     "location": "path",
@@ -12,12 +12,12 @@
                 },
                 "page": {
                     "location": "query",
-                    "param": [{
+                    "param": {
                         "_desde": {
                             "type": "offset",
                             "defaultValue": 48
                         }
-                    }]
+                    }
                 }
             },
             "Selectors": "a.ui-search-item__group__element",
@@ -44,12 +44,12 @@
                 },
                 "page": {
                     "location": "query",
-                    "param": [{
+                    "param": {
                         "page": {
                             "type": "page",
                             "defaultValue": 1
                         }
-                    }]
+                    }
                 }
             },
             "Selectors": "a[data-testid='product-link']",
@@ -85,12 +85,12 @@
                 },
                 "page": {
                     "location": "query",
-                    "param": [{
+                    "param": {
                         "page": {
                             "type": "page",
                             "defaultValue": 1
                         }
-                    }]
+                    }
                 }
             },
             "Selectors": "a[href$='.html']",
@@ -116,7 +116,7 @@
             "AssociatedSource": "RIPLEY",
             "NavType": "search",
             "SubDomain": "simple",
-            "UrlTemplate": "https://simple.ripley.cl/search/{search}",
+            "UrlTemplate": "https://simple.ripley.cl/search",
             "QueryParamMapping": {
                 "search": {
                     "location": "path",
@@ -124,14 +124,12 @@
                 },
                 "page": {
                     "location": "query",
-                    "param": [
-                        {
+                    "param": {
                         "page": {
                             "type": "page",
                             "defaultValue": 1
-                            }
                         }
-                    ]
+                    }
                 }
             },
             "Selectors": "a[href*='/product/']",
@@ -168,12 +166,12 @@
                 },
                 "page": {
                     "location": "query",
-                    "param": [{
+                    "param": {
                         "page": {
                             "type": "page",
                             "defaultValue": 1
                         }
-                    }]
+                    }
                 }
             },
             "Selectors": "a[href*='/p/']",

@@ -26,6 +26,15 @@ class Db:
         client = MongoClient(MONGO_URI)
         db = client[DB_NAME]
         return db
+
+    def find_all(self, collection_name: str) -> list:
+        collection = self.db[collection_name]
+        documents = list(collection.find())
+        return documents
+    
+    def find_by_field(self, collection_name: str, field: str, value):
+        collection = self.db[collection_name]
+        return list(collection.find({field: value}))
     
     def save(self, data, collection_name=None) -> bool:
         if not is_dataclass(data):

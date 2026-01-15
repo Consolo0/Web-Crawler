@@ -1,102 +1,142 @@
 {
     "ExtractionRules": [
         {
-            "AssociatedSourceRule": "MERCADOLIBREProductTitle",
+            "AssociatedSource": "MERCADOLIBRE",
+            "Type":"ProductTitle",
+            "Priority": 1,
             "Selector": "h1.ui-pdp-title",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "MERCADOLIBREPrice",
+            "AssociatedSource": "MERCADOLIBRE",
+            "Type":"Price",
+            "Priority":1,
             "Selector": "span.andes-money-amount__fraction",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "MERCADOLIBREStock",
+            "AssociatedSource": "MERCADOLIBRE",
+            "Type":"Stock",
+            "Priority":1,
             "Selector": "span.ui-pdp-action-row__subtitle",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "MERCADOLIBRERating",
+            "AssociatedSource": "MERCADOLIBRE",
+            "Type":"Rating",
+            "Priority":1,
             "Selector": "span.ui-review-capability__rating__average",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "FALABELLAProductTitle",
+            "AssociatedSource": "FALABELLA",
+            "Type":"ProductTitle",
+            "Priority": 1,
             "Selector": "h1.fa--product-name",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "FALABELLAPrice",
+            "AssociatedSource": "FALABELLA",
+            "Type":"Price",
+            "Priority": 1,
             "Selector": "div[class*='price'] span",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "FALABELLASTock",
+            "AssociatedSource": "FALABELLA",
+            "Type":"Stock",
+            "Priority":1,
             "Selector": "div.add-quantity-container p",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "FALABELLARating",
+            "AssociatedSource": "FALABELLA",
+            "Type":"Rating",
+            "Priority":1,
             "Selector": "div[class^='_bv-summary-rating'] span",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "PARISProductTitle",
+            "AssociatedSource": "PARIS",
+            "Type":"ProductTitle",
+            "Priority": 1,
             "Selector": "h1[class*='ui-text-h1']",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "PARISPrice",
+            "AssociatedSource": "PARIS",
+            "Type":"Price",
+            "Priority":1,
             "Selector": "h2[class*='ui-text-subtitle']",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "PARISPriceSecondFallBack",
+            "AssociatedSource": "PARIS",
+            "Type":"Price",
+            "Priority":2,
             "Selector": "span[class*='ui-text-body']",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "PARISStock",
+            "AssociatedSource": "PARIS",
+            "Type":"Stock",
+            "Priority":1,
             "Selector": "div[class*='stock'] p",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "PARISRating",
+            "AssociatedSource": "PARIS",
+            "Type":"Rating",
+            "Priority":1,
             "Selector": "button[data-testid='star-rating-rating-value']",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "RIPLEYProductTitle",
+            "AssociatedSource": "RIPLEY",
+            "Type":"ProductTitle",
+            "Priority": 1,
             "Selector": "section.product-header h1",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "RIPLEYPrice",
+            "AssociatedSource": "RIPLEY",
+            "Type":"Price",
+            "Priority":1,
             "Selector": "dt.product-price",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "RIPLERating",
+            "AssociatedSource": "RIPLEY",
+            "Type":"Rating",
+            "Priority":1,
             "Selector": "span.pr-reco-value",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "LIDERProductTitle",
+            "AssociatedSource": "LIDER",
+            "Type":"ProductTitle",
+            "Priority": 1,
             "Selector": "h1#main-title[itemprop='name']",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "LIDERPrice",
+            "AssociatedSource": "LIDER",
+            "Type":"Price",
+            "Priority":1,
             "Selector": "span[itemprop='price'][data-fs-element='price']",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "LIDERRating",
+            "AssociatedSource": "LIDER",
+            "Type":"Rating",
+            "Priority":1,
             "Selector": "span.rating-number",
             "Attribute": "text"
         },
         {
-            "AssociatedSourceRule": "LIDERStock",
+            "AssociatedSource": "LIDER",
+            "Type":"Stock",
+            "Priority":1,
             "Selector": "button[data-fs-element='add-to-cart'], button:contains('Agregar')",
             "Attribute": "existence"
         }
