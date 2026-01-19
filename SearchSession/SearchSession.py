@@ -19,7 +19,9 @@ class SearchSession(AbstractSearchSession):
             url_generator = URLGenerator(sources_metadata, query, self.navigation_strategy)
             navigator = url_generator.run()
 
-            crawler = Crawler(navigator, sources_metadata)
+            cut_evaluator = CutEvaluator(self.stop_criteria)
+
+            crawler = Crawler(navigator, cut_evaluator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler)
             results = crawler.crawl()
             self.status = SessionStatus.FINISHED
 

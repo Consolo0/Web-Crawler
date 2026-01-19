@@ -4,6 +4,7 @@ from Error.NotSuccesfullySaved import NotSuccesfullySaved
 from Handler.GeneralHandler import GeneralHandler
 from Setters.SearchSesionRestrictions.NavigationStrategy import NavigationStrategy
 from Setters.SearchSesionRestrictions.StopCriteria import StopCriteria
+from SearchSession.SearchSession import SearchSession
 
 class Controller(AbstractController):
     def __init__(self, query: str, db: Db) -> None:
@@ -21,10 +22,11 @@ class Controller(AbstractController):
         stop_criteria = StopCriteria(restrictions.get("stop_criteria", {}))
         navigation_strategy = NavigationStrategy(restrictions.get("navigation_strategy", {}))
 
-        SearchSession = SearchSession(error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
+        search_session = SearchSession(error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
+        result = search_session.execute(self.query)
         
         error_handler.save_in_db(self.db, 'Error')
         page_visit_handler.save_in_db(self.db, 'PageVisit')
         price_handler.save_in_db(self.db, 'Price')
         
-        return SearchSession.execute(self.query)
+        return result
