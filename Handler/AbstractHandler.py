@@ -19,7 +19,7 @@ class AbstractHandler(ABC):
         pass
     def save_in_db(self, db: Db, collection_name: str) -> bool:
         for element in self.elements:
-            is_saved = db.save(element, collection_name)
-            if not is_saved:
+            collection_saved, _ = db.save(element, collection_name)
+            if not collection_saved:
                 raise NotSuccesfullySaved(f"Failed to save element: {element}")
         return True

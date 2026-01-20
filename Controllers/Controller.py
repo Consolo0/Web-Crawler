@@ -11,8 +11,8 @@ class Controller(AbstractController):
         super().__init__(query, db)
 
     def run(self, restrictions: dict) -> dict:
-        is_query_saved = self.db.save(self.query)
-        if not is_query_saved:
+        query_saved, _ = self.db.save(self.query)
+        if not query_saved:
             raise NotSuccesfullySaved("Failed to save the query to the database.")
         
         error_handler = GeneralHandler()
@@ -25,8 +25,12 @@ class Controller(AbstractController):
         search_session = SearchSession(error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
         result = search_session.execute(self.query)
         
-        error_handler.save_in_db(self.db, 'Error')
+        """error_handler.save_in_db(self.db, 'Error')
         page_visit_handler.save_in_db(self.db, 'PageVisit')
         price_handler.save_in_db(self.db, 'Price')
+
+        Principal error es que cada error y pagevisit necesita el searchsession id
+        y el price necesita el pagevisit
+        """
         
         return result

@@ -1,9 +1,11 @@
+from Enums.NavigationStrategyType import NavigationStrategyType
+
 class NavigationStrategy:
 
     def __init__(self, strategy_params: dict = None):
         if strategy_params is None:
             strategy_params = {}
-        self._type = strategy_params.get("type", "BreadthFirst")
+        self._type = strategy_params.get("type", NavigationStrategyType.BFS)
         self._maximum_depth = strategy_params.get("maximum_depth", 5)
 
         @property

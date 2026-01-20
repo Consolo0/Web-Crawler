@@ -4,6 +4,7 @@ from SearchSession.Status import SessionStatus
 from datetime import datetime
 from URLProvider.Sources.SourceOrchestator import SourceOrchestator
 from URLProvider.URL.URLGenerator import URLGenerator
+from Crawler.Crawler import Crawler
 
 class SearchSession(AbstractSearchSession):
     def __init__(self, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
@@ -19,10 +20,8 @@ class SearchSession(AbstractSearchSession):
             url_generator = URLGenerator(sources_metadata, query, self.navigation_strategy)
             navigator = url_generator.run()
 
-            cut_evaluator = CutEvaluator(self.stop_criteria)
-
-            crawler = Crawler(navigator, cut_evaluator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler)
-            results = crawler.crawl()
+            crawler = Crawler(navigator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler, self.associated_stop_criteria )
+            results = crawler.crawl() #lo que entrega muy probablemente cambie
             self.status = SessionStatus.FINISHED
 
         except Exception as e:
@@ -32,7 +31,8 @@ class SearchSession(AbstractSearchSession):
 
         self.end_time = datetime.now()
 
-        db.save(self.stop_criteria, 'StopCriteria')
-        db.save(self.navigation_strategy, 'NavigationStrategy')
+        stop_criteria_collecion, stop_criteria_id = db.save(self.stop_criteria, 'StopCriteria')
+        nav_strategy_collecion, nav_strategy_id = db.save(self.navigation_strategy, 'NavigationStrategy')
 
         return results
+    

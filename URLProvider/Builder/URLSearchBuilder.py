@@ -1,4 +1,4 @@
-class URLBuilder:
+class URLSearchBuilder:
     def build_url(
         self,
         initial_url,

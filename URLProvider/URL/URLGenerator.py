@@ -1,13 +1,14 @@
 from Navigator.NavigatorOrchestator import NavigatorOrchestator
-from urllib.parse import quote_plus
 from URLProvider.Encoder.QueryEncoder import QueryEncoder
+from URLProvider.Builder.URLSearchBuilder import URLSearchBuilder
+from URLType.URLType import URLType
 
 class URLGenerator:
     def __init__(self, sources_metadata, query, navigation_strategy):
         self.sources_metadata = sources_metadata
         self.query = query
         self.navigation_strategy = navigation_strategy
-        self.url_builder = URLBuilder()
+        self.url_search_builder = URLSearchBuilder()
         self.query_encoder = QueryEncoder()
 
     def run(self):
@@ -18,23 +19,25 @@ class URLGenerator:
             for nav_rule in self.sources_metadata[source]["NavRules"]:
                 
                 query_param_mapping = nav_rule.get("QueryParamMapping", {})
-                if nav_rule["Type"].lower() == "search":
+                if nav_rule["Type"].lower() == URLType.SEARCH:
 
                     if nav_rule["PaginationType"].lower() == "page":
                         for i in range(1, nav_rule["MaxPages"] + 1):
+
                             url = self.generate_search_url(
                                 query_param_mapping, page=i
                             )
-                            navigator.add_url(source, url)
+                            navigator.add(source, url, 0, URLType.SEARCH)
+
                     else:
                         continue  # Otros tipos de paginación pueden ser manejados aquí
 
     def generate_search_url(self, nav_rule, query_param_mapping, page=None) -> str:
         initial_url = nav_rule["UrlTemplate"]
 
-        search_location = query_param_mapping["search"]["location"] #path o query
-        encoding_type = query_param_mapping["search"]["transform"]
-        search_param = query_param_mapping["search"].get("param", None)
+        search_location = query_param_mapping[URLType.SEARCH]["location"] #path o query
+        encoding_type = query_param_mapping[URLType.SEARCH]["transform"]
+        search_param = query_param_mapping[URLType.SEARCH].get("param", None)
 
         encoded_query = self.query_encoder.encode(self.query, encoding_type) 
 
@@ -44,7 +47,7 @@ class URLGenerator:
             for variable in query_param_mapping["page"]["param"]
         ]
 
-        url_builder = self.url_builder.build_url(
+        search_url_built = self.url_search_builder.build_url(
             initial_url,
             search_location,
             encoded_query,
@@ -54,4 +57,4 @@ class URLGenerator:
             page
         )
 
-        return url_builder.build()
+        return search_url_built

@@ -36,11 +36,12 @@ class Db:
         collection = self.db[collection_name]
         return list(collection.find({field: value}))
     
-    def save(self, data, collection_name=None) -> bool:
+    def save(self, data, collection_name=None):
         if not is_dataclass(data):
             raise NotExpectedType("dataclass", type(data), "Data must be an instance of a class")
 
         collection = self.db[collection_name] if collection_name else self.db[data.__class__.__name__]
         document = asdict(data)
         result = collection.insert_one(document)
-        return result.acknowledged
+
+        return collection, result.inserted_id
