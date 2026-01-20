@@ -1,6 +1,6 @@
 from collections import defaultdict
 import re
-
+from CutEvaluator.CutEvaluator import CutEvaluator
 
 class Crawler:
 
@@ -12,6 +12,8 @@ class Crawler:
         self.page_visit_handler = page_visit_handler
         self.price_handler = price_handler
         self.cut_evaluator = CutEvaluator(stop_criteria)
+        self.url_visited = set()
+        self.fetcher = Fetcher()
 
         self.errors_per_sources = defaultdict(int)
         self.results = defaultdict(dict)
@@ -20,15 +22,16 @@ class Crawler:
 
         while not self.navigator.is_empty():
             source_id, url, level, page_type = self.navigator.get_element()
+
+            if url in self.url_visited:
+                continue
+
             source_ctx = self.sources_rules.get(source_id)
 
             if not source_ctx:
                 continue
 
             try:
-                # ─────────────────────────────────────────────
-                # 1. VALIDATION (before any fetch)
-                # ─────────────────────────────────────────────
                 if not self._is_url_allowed(url, source_ctx["ValidationRules"]):
                     continue
 
@@ -36,15 +39,15 @@ class Crawler:
                 # 2. FETCH PAGE (API NOT PROVIDED)
                 # ─────────────────────────────────────────────
                 # This MUST be provided by navigator or another component
-                html = self.navigator.fetch(url)
+
+                """
+                FALTANTE HACER EL FETCHER
+                """
+                html = self.fetcher.fetch(url)
                 if not html:
                     continue
+                self.url_visited.add(url)
 
-                self.page_visit_handler.on_visit(source_id, url)
-
-                # ─────────────────────────────────────────────
-                # 3. PAGE TYPE DISPATCH
-                # ─────────────────────────────────────────────
                 if page_type in ("search", "category"):
                     self._process_listing_page(
                         source_id,
@@ -60,13 +63,12 @@ class Crawler:
                     )
                     if data:
                         self.results[source_id][url] = data
+                
 
                 # ─────────────────────────────────────────────
                 # 4. CUT EVALUATOR
                 # ─────────────────────────────────────────────
                 if not self.cut_evaluator.should_continue(
-                    source_id=source_id,
-                    level=level,
                     errors=self.errors_per_sources[source_id]
                 ):
                     break
@@ -132,7 +134,7 @@ class Crawler:
                     break  # fallback handled
 
         if "Price" in extracted:
-            extracted["Price"] = self.price_handler.normalize(
+            extracted["Price"] = TextNormalizer.normalize(
                 extracted["Price"]
             )
 
