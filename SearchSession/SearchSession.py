@@ -4,7 +4,7 @@ from SearchSession.Status import SessionStatus
 from datetime import datetime
 from URLProvider.Sources.SourceOrchestator import SourceOrchestator
 from URLProvider.URL.URLGenerator import URLGenerator
-from Crawler.Crawler import Crawler
+from CrawlerProcess.Crawler import Crawler
 
 class SearchSession(AbstractSearchSession):
     def __init__(self, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
