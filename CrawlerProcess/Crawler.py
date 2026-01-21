@@ -1,11 +1,15 @@
 from collections import defaultdict
 import re
+from bs4 import BeautifulSoup
 from CutEvaluator.CutEvaluator import CutEvaluator
+from Fetch.Fetcher import Fetcher
+from TextNormalizer.TextNormalizer import TextNormalizer
+from Enums.InfoType import InfoType
 
 class Crawler:
 
     def __init__(self, navigator, sources_metadata, error_handler,
-                 page_visit_handler, price_handler, stop_criteria):
+        page_visit_handler, price_handler, stop_criteria):
         self.navigator = navigator
         self.sources_rules = sources_metadata
         self.error_handler = error_handler
@@ -31,51 +35,49 @@ class Crawler:
             if not source_ctx:
                 continue
 
+            if not self._is_url_allowed(url, source_ctx["ValidationRules"]):
+                continue
+
+            # ─────────────────────────────────────────────
+            # 2. FETCH PAGE (API NOT PROVIDED)
+            # ─────────────────────────────────────────────
+            # This MUST be provided by navigator or another component
+
+            """
+            FALTANTE HACER EL FETCHER
+            """
             try:
-                if not self._is_url_allowed(url, source_ctx["ValidationRules"]):
-                    continue
-
-                # ─────────────────────────────────────────────
-                # 2. FETCH PAGE (API NOT PROVIDED)
-                # ─────────────────────────────────────────────
-                # This MUST be provided by navigator or another component
-
-                """
-                FALTANTE HACER EL FETCHER
-                """
-                html = self.fetcher.fetch(url)
-                if not html:
-                    continue
-                self.url_visited.add(url)
-
-                if page_type in ("search", "category"):
-                    self._process_listing_page(
-                        source_id,
-                        html,
-                        source_ctx["NavRules"],
-                        level
-                    )
-
-                elif page_type == "product":
-                    data = self._process_product_page(
-                        html,
-                        source_ctx["ExtractionRules"]
-                    )
-                    if data:
-                        self.results[source_id][url] = data
-                
-
-                # ─────────────────────────────────────────────
-                # 4. CUT EVALUATOR
-                # ─────────────────────────────────────────────
-                if not self.cut_evaluator.should_continue(
-                    errors=self.errors_per_sources[source_id]
-                ):
-                    break
-
+                raw_html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
+                html = BeautifulSoup(raw_html, "html.parser")
             except Exception as e:
                 self.errors_per_sources[source_id] += 1
                 self.error_handler.add_element((source_id, url, e))
+                continue
+            
+            if not html:
+                continue
+            self.url_visited.add(url) 
+
+            if page_type in ("search", "category"):
+                self._process_listing_page(
+                    source_id,
+                    html,
+                    source_ctx["NavRules"],
+                    level
+                )
+
+            elif page_type == "product":
+                data = self._process_product_page(
+                    html,
+                    source_ctx["ExtractionRules"]
+                )
+                if data:
+                    self.results[source_id][url] = data
+            
+            if not self.cut_evaluator.should_continue(
+                errors=self.errors_per_sources[source_id]
+            ):
+                break
 
     def _is_url_allowed(self, url, validation_rules):
         for rule in validation_rules:
@@ -109,7 +111,7 @@ class Crawler:
         # group by entity type
         rules_by_entity = defaultdict(list)
         for rule in extraction_rules:
-            rules_by_entity[rule["AssociatedSourceRule"]].append(rule)
+            rules_by_entity[rule["Type"]].append(rule)
 
         for entity, rules in rules_by_entity.items():
             rules.sort(key=lambda r: r.get("Priority", 1))
@@ -132,12 +134,12 @@ class Crawler:
                 if value:
                     extracted[entity] = value
                     break  # fallback handled
-
-        if "Price" in extracted:
-            extracted["Price"] = TextNormalizer.normalize(
-                extracted["Price"]
+        
+        for numberInfoType in InfoType.NumberCategory:
+            extracted[numberInfoType] = TextNormalizer.normalize(
+                extracted[numberInfoType]
             )
-
+            
         return extracted
 
 
