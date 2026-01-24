@@ -1,15 +1,16 @@
 from collections import defaultdict
 import re
-from bs4 import BeautifulSoup
 from CutEvaluator.CutEvaluator import CutEvaluator
 from Fetch.Fetcher import Fetcher
 from TextNormalizer.TextNormalizer import TextNormalizer
 from Enums.InfoType import InfoType
+from ResultIntegrator.ResultIntegrator import ResultIntegrator
 
 class Crawler:
 
     def __init__(self, navigator, sources_metadata, error_handler,
         page_visit_handler, price_handler, stop_criteria):
+
         self.navigator = navigator
         self.sources_rules = sources_metadata
         self.error_handler = error_handler
@@ -20,7 +21,7 @@ class Crawler:
         self.fetcher = Fetcher()
 
         self.errors_per_sources = defaultdict(int)
-        self.results = defaultdict(dict)
+        self.results = ResultIntegrator()
 
     def crawl(self):
 
@@ -38,17 +39,8 @@ class Crawler:
             if not self._is_url_allowed(url, source_ctx["ValidationRules"]):
                 continue
 
-            # ─────────────────────────────────────────────
-            # 2. FETCH PAGE (API NOT PROVIDED)
-            # ─────────────────────────────────────────────
-            # This MUST be provided by navigator or another component
-
-            """
-            FALTANTE HACER EL FETCHER
-            """
             try:
-                raw_html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
-                html = BeautifulSoup(raw_html, "html.parser")
+                html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
             except Exception as e:
                 self.errors_per_sources[source_id] += 1
                 self.error_handler.add_element((source_id, url, e))
@@ -59,6 +51,7 @@ class Crawler:
             self.url_visited.add(url) 
 
             if page_type in ("search", "category"):
+
                 self._process_listing_page(
                     source_id,
                     html,
@@ -67,12 +60,13 @@ class Crawler:
                 )
 
             elif page_type == "product":
+
                 data = self._process_product_page(
                     html,
                     source_ctx["ExtractionRules"]
                 )
-                if data:
-                    self.results[source_id][url] = data
+
+                self.results.add_result(source_id, url, data)
             
             if not self.cut_evaluator.should_continue(
                 errors=self.errors_per_sources[source_id]
@@ -108,7 +102,6 @@ class Crawler:
     def _process_product_page(self, html, extraction_rules):
         extracted = {}
 
-        # group by entity type
         rules_by_entity = defaultdict(list)
         for rule in extraction_rules:
             rules_by_entity[rule["Type"]].append(rule)
@@ -133,7 +126,7 @@ class Crawler:
 
                 if value:
                     extracted[entity] = value
-                    break  # fallback handled
+                    break
         
         for numberInfoType in InfoType.NumberCategory:
             extracted[numberInfoType] = TextNormalizer.normalize(

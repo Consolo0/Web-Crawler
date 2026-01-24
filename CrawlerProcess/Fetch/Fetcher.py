@@ -1,14 +1,10 @@
 from typing import Optional
 import requests
 from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
 
 
 class Fetcher:
-    """
-    Fetcher is responsible ONLY for retrieving HTML content.
-    - If uses_js=False -> fast HTTP fetch using requests
-    - If uses_js=True  -> JS-rendered fetch using Playwright
-    """
 
     def __init__(
         self,
@@ -23,25 +19,13 @@ class Fetcher:
         )
 
     def fetch(self, url: str, uses_js: bool) -> str:
-        """
-        Fetches HTML from the given URL.
 
-        :param url: URL to fetch
-        :param uses_js: whether the page requires JavaScript execution
-        :return: rendered HTML as string
-        """
         if uses_js:
-            return self._fetch_with_js(url)
-        return self._fetch_without_js(url)
-
-    # -------------------------
-    # Internal implementations
-    # -------------------------
+            return BeautifulSoup(self._fetch_with_js(url), "html.parser")
+        return BeautifulSoup(self._fetch_without_js(url), "html.parser")
 
     def _fetch_without_js(self, url: str) -> str:
-        """
-        Fast path: plain HTTP fetch.
-        """
+
         response = requests.get(
             url,
             timeout=self.timeout_seconds,
@@ -51,9 +35,7 @@ class Fetcher:
         return response.text
 
     def _fetch_with_js(self, url: str) -> str:
-        """
-        JS-rendered fetch using Playwright.
-        """
+
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(
