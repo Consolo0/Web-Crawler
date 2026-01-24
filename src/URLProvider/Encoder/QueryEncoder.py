@@ -1,4 +1,4 @@
-from Error.EncodingNotRecognized import EncodingNotRecognizedError
+from src.Error.EncodingNotRecognized import EncodingNotRecognizedError
 class QueryEncoder:
     def __init__(self):
         self.encodings = {

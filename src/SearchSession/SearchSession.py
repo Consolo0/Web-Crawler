@@ -1,10 +1,10 @@
-from AbstractSearchSession import AbstractSearchSession
-from Db.Db import Db
-from SearchSession.Status import SessionStatus
+from .AbstractSearchSession import AbstractSearchSession
+from src.Db.Db import Db
+from src.SearchSession.Status import SessionStatus
 from datetime import datetime
-from URLProvider.Sources.SourceOrchestator import SourceOrchestator
-from URLProvider.URL.URLGenerator import URLGenerator
-from CrawlerProcess.Crawler import Crawler
+from src.URLProvider.Sources.SourceOrchestator import SourceOrchestator
+from src.URLProvider.URL.URLGenerator import URLGenerator
+from src.CrawlerProcess.Crawler import Crawler
 
 class SearchSession(AbstractSearchSession):
     def __init__(self, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):

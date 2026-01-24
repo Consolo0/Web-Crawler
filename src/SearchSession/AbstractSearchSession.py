@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from SearchSession.Status.SessionStatus import SessionStatus
+from src.SearchSession.Status.SessionStatus import SessionStatus
 
 class AbstractSearchSession(ABC):
     def __init__(self, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy, query_id):

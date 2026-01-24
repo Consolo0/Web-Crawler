@@ -1,5 +1,4 @@
-
-from DataStructure.AbstractNavigator import AbstractNavigator
+from src.Navigator.DataStructure.AbstractNavigator import AbstractNavigator
 
 class DFSNavigator(AbstractNavigator):
     def __init__(self):

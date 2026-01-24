@@ -1,4 +1,4 @@
-from Navigator.DataStructure.AbstractNavigator import AbstractNavigator
+from src.Navigator.DataStructure.AbstractNavigator import AbstractNavigator
 from collections import deque
 
 class BFSNavigator(AbstractNavigator):

@@ -1,5 +1,5 @@
-from Error.UnIdentifiedNavigator import UnIdentifiedNavigator
-from Enums.NavigationStrategyType import NavigationStrategyType
+from src.Error.UnIdentifiedNavigator import UnIdentifiedNavigator
+from src.Enums.NavigationStrategyType import NavigationStrategyType
 class NavigatorOrchestrator:
 
     @staticmethod

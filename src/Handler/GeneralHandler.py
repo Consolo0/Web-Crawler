@@ -1,5 +1,5 @@
-from Handler.AbstractHandler import AbstractHandler
-from Error.IndexOutOfRangeInHandler import IndexOutOfRangeInHandler
+from src.Handler.AbstractHandler import AbstractHandler
+from src.Error.IndexOutOfRangeInHandler import IndexOutOfRangeInHandler
 class GeneralHandler(AbstractHandler):
     def __init__(self):
         super().__init__()

@@ -1,7 +1,7 @@
-from Navigator.NavigatorOrchestator import NavigatorOrchestator
-from URLProvider.Encoder.QueryEncoder import QueryEncoder
-from URLProvider.Builder.URLSearchBuilder import URLSearchBuilder
-from URLType.URLType import URLType
+from src.Navigator.NavigatorOrchestator import NavigatorOrchestrator
+from src.URLProvider.Encoder.QueryEncoder import QueryEncoder
+from src.URLProvider.Builder.URLSearchBuilder import URLSearchBuilder
+from src.URLProvider.URLType.URLType import URLType
 
 class URLGenerator:
     def __init__(self, sources_metadata, query, navigation_strategy):
@@ -12,7 +12,7 @@ class URLGenerator:
         self.query_encoder = QueryEncoder()
 
     def run(self):
-        navigator = NavigatorOrchestator.get_navigator(self.navigation_strategy.type)
+        navigator = NavigatorOrchestrator.get_navigator(self.navigation_strategy.type)
         
         #Por ahora solo haremos una busqueda por search
         for source in self.sources_metadata:

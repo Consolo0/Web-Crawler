@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from Error.NotSuccesfullySaved import NotSuccesfullySaved
-from Db.Db import Db
+from src.Error.NotSuccesfullySaved import NotSuccesfullySaved
+from src.Db.Db import Db
 class AbstractHandler(ABC):
     def __init__(self):
         self.__elements = []

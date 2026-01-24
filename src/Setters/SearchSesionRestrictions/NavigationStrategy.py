@@ -1,4 +1,4 @@
-from Enums.NavigationStrategyType import NavigationStrategyType
+from src.Enums.NavigationStrategyType import NavigationStrategyType
 
 class NavigationStrategy:
 

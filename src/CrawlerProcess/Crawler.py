@@ -1,10 +1,10 @@
 from collections import defaultdict
 import re
-from CutEvaluator.CutEvaluator import CutEvaluator
-from Fetch.Fetcher import Fetcher
-from TextNormalizer.TextNormalizer import TextNormalizer
-from Enums.InfoType import InfoType
-from ResultIntegrator.ResultIntegrator import ResultIntegrator
+from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
+from src.CrawlerProcess.Fetch.Fetcher import Fetcher
+from src.CrawlerProcess.TextNormalizer.TextNormalizer import TextNormalizer
+from src.Enums.InfoType import InfoType
+from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 
 class Crawler:
 

@@ -1,10 +1,10 @@
-from .AbstractController import AbstractController
-from Db.Db import Db
-from Error.NotSuccesfullySaved import NotSuccesfullySaved
-from Handler.GeneralHandler import GeneralHandler
-from Setters.SearchSesionRestrictions.NavigationStrategy import NavigationStrategy
-from Setters.SearchSesionRestrictions.StopCriteria import StopCriteria
-from SearchSession.SearchSession import SearchSession
+from src.Controllers.AbstractController import AbstractController
+from src.Db.Db import Db
+from src.Error.NotSuccesfullySaved import NotSuccesfullySaved
+from src.Handler.GeneralHandler import GeneralHandler
+from src.Setters.SearchSesionRestrictions.NavigationStrategy import NavigationStrategy
+from src.Setters.SearchSesionRestrictions.StopCriteria import StopCriteria
+from src.SearchSession.SearchSession import SearchSession
 
 class Controller(AbstractController):
     def __init__(self, query: str, db: Db) -> None:
