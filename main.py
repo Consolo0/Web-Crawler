@@ -1,4 +1,4 @@
-from src.Controllers import Controller
+from src.Controllers.Controller import Controller
 from src.Db.Db import Db
 query = input("Enter your search (be as specific as possible for better results):")
 restrictions = {}

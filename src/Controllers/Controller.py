@@ -27,7 +27,7 @@ class Controller(AbstractController):
         
         search_session = SearchSession(error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
         print("Search Session creado")
-        result = search_session.execute(self.query)
+        result = search_session.execute(self.query, self.db)
         
         """error_handler.save_in_db(self.db, 'Error')
         page_visit_handler.save_in_db(self.db, 'PageVisit')
