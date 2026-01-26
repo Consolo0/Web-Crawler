@@ -18,7 +18,7 @@ class SearchSession(AbstractSearchSession):
             sources_metadata = source_orchestator.get_sources()
             print("Creado la info de las sources")
 
-            url_generator = URLGenerator(sources_metadata, query, self.navigation_strategy)
+            url_generator = URLGenerator(sources_metadata, query, self.associated_navigation_strategy)
             navigator = url_generator.run()
             print("Creadas las urls y el navegador")
             

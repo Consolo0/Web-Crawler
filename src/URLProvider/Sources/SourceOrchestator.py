@@ -7,7 +7,7 @@ class SourceOrchestator:
         self.db = db
     
     def get_sources(self) -> list:
-        sources = MappingProxyType(self.db.find_all("Sources"))
+        sources = self.db.find_all("Sources")
         source_context = {}
 
         for source in sources:

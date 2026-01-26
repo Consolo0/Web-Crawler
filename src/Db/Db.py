@@ -34,7 +34,8 @@ class Db:
     
     def find_by_field(self, collection_name: str, field: str, value):
         collection = self.db[collection_name]
-        return list(collection.find({field: value}))
+        result = list(collection.find({field: value}))
+        return result
     
     def save(self, data, collection_name=None):
         if not is_dataclass(data):

@@ -8,9 +8,9 @@ class NavigationStrategy:
         self._type = strategy_params.get("type", NavigationStrategyType.BFS)
         self._maximum_depth = strategy_params.get("maximum_depth", 5)
 
-        @property
-        def type(self) -> str:
-            return self._type
-        @property
-        def maximum_depth(self) -> int:
-            return self._maximum_depth
+    @property
+    def type(self) -> str:
+        return self._type
+    @property
+    def maximum_depth(self) -> int:
+        return self._maximum_depth
