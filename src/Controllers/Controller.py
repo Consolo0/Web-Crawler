@@ -19,14 +19,10 @@ class Controller(AbstractController):
         page_visit_handler = GeneralHandler()
         price_handler = GeneralHandler()
 
-        print('Todos los handler creados')
-
         stop_criteria = StopCriteria(restrictions.get("stop_criteria", {}))
         navigation_strategy = NavigationStrategy(restrictions.get("navigation_strategy", {}))
-        print("Stop y Navigation creados")
         
         search_session = SearchSession(error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
-        print("Search Session creado")
         result = search_session.execute(self.query, self.db)
         
         """error_handler.save_in_db(self.db, 'Error')

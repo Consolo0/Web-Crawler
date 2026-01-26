@@ -72,6 +72,8 @@ class Crawler:
                 errors=self.errors_per_sources[source_id]
             ):
                 break
+        
+        return self.results
 
     def _is_url_allowed(self, url, validation_rules):
         for rule in validation_rules:

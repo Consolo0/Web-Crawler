@@ -1,6 +1,6 @@
 from .AbstractSearchSession import AbstractSearchSession
 from src.Db.Db import Db
-from src.SearchSession.Status import SessionStatus
+from src.SearchSession.Status.SessionStatus import SessionStatus
 from datetime import datetime
 from src.URLProvider.Sources.SourceOrchestator import SourceOrchestator
 from src.URLProvider.URL.URLGenerator import URLGenerator
@@ -16,11 +16,9 @@ class SearchSession(AbstractSearchSession):
         try:
             source_orchestator = SourceOrchestator(db)
             sources_metadata = source_orchestator.get_sources()
-            print("Creado la info de las sources")
 
             url_generator = URLGenerator(sources_metadata, query, self.associated_navigation_strategy)
             navigator = url_generator.run()
-            print("Creadas las urls y el navegador")
             
             crawler = Crawler(navigator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler, self.associated_stop_criteria )
             results = crawler.crawl() #lo que entrega muy probablemente cambie

@@ -5,11 +5,11 @@ class NavigatorOrchestrator:
     @staticmethod
     def get_navigator(navigation_strategy_type: str):
         if navigation_strategy_type == NavigationStrategyType.BFS:
-            from DataStructure.BFSNavigator import BFSNavigator
+            from .DataStructure.BFSNavigator import BFSNavigator
             return BFSNavigator()
         
         elif navigation_strategy_type == NavigationStrategyType.DFS:
-            from DataStructure.DFSNavigator import DFSNavigator
+            from .DataStructure.DFSNavigator import DFSNavigator
             return DFSNavigator()
         else:
             raise UnIdentifiedNavigator(type=navigation_strategy_type)

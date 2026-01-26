@@ -1,4 +1,5 @@
 from src.Navigator.NavigatorOrchestator import NavigatorOrchestrator
+from src.Navigator.DataStructure.AbstractNavigator import AbstractNavigator
 from src.URLProvider.Encoder.QueryEncoder import QueryEncoder
 from src.URLProvider.Builder.URLSearchBuilder import URLSearchBuilder
 from src.URLProvider.URLType.URLType import URLType
@@ -11,26 +12,26 @@ class URLGenerator:
         self.url_search_builder = URLSearchBuilder()
         self.query_encoder = QueryEncoder()
 
-    def run(self):
+    def run(self) -> AbstractNavigator:
         navigator = NavigatorOrchestrator.get_navigator(self.navigation_strategy.type)
-        
-        #Por ahora solo haremos una busqueda por search
+
         for source in self.sources_metadata:
             for nav_rule in self.sources_metadata[source]["NavRules"]:
-                
+
                 query_param_mapping = nav_rule.get("QueryParamMapping", {})
-                if nav_rule["Type"].lower() == URLType.SEARCH:
+                if nav_rule["NavType"].lower() == URLType.SEARCH:
 
                     if nav_rule["PaginationType"].lower() == "page":
                         for i in range(1, nav_rule["MaxPages"] + 1):
 
                             url = self.generate_search_url(
-                                query_param_mapping, page=i
+                                nav_rule, query_param_mapping, page=i
                             )
                             navigator.add(source, url, 0, URLType.SEARCH)
 
                     else:
                         continue  # Otros tipos de paginación pueden ser manejados aquí
+        return navigator
 
     def generate_search_url(self, nav_rule, query_param_mapping, page=None) -> str:
         initial_url = nav_rule["UrlTemplate"]

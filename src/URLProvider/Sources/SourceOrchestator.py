@@ -11,6 +11,8 @@ class SourceOrchestator:
         source_context = {}
 
         for source in sources:
+            source = MappingProxyType(source)
+            
             nav_rules = [MappingProxyType(rule)
                 for rule in
                 self.db.find_by_field("NavRules", "AssociatedSource", source["ID"])
