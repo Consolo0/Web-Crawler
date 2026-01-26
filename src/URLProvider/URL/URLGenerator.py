@@ -36,7 +36,7 @@ class URLGenerator:
 
                         else:
                             continue  # Otros tipos de paginación pueden ser manejados aquí
-                        
+
             except Exception as e:
                 print(f"Error processing source {source}: {type(e).__name__}: {e}")
                 import traceback
@@ -48,25 +48,37 @@ class URLGenerator:
     def generate_search_url(self, nav_rule, query_param_mapping, page=None) -> str:
         initial_url = nav_rule["UrlTemplate"]
 
-        search_location = query_param_mapping[URLType.SEARCH.value]["location"] #path o query
-        encoding_type = query_param_mapping[URLType.SEARCH.value]["transform"]
-        search_param = query_param_mapping[URLType.SEARCH.value].get("param", None)
+        search_config = query_param_mapping.get("search", {})
+        search_location = search_config.get("location")
+        encoding_type = search_config.get("transform")
+        search_param = search_config.get("param", None)
 
         encoded_query = self.query_encoder.encode(self.query.query, encoding_type)
 
-        pagination_param__location = query_param_mapping["page"]["location"]
-        pagination_params_name_and_initial_value = [
-            (variable, query_param_mapping["page"]["param"][variable]["defaultValue"])
-            for variable in query_param_mapping["page"]["param"]
-        ]
+        other_params = query_param_mapping.get("other_params", {})
+        sorted_params = sorted(
+            other_params.items(),
+            key=lambda x: x[1].get("order", float('inf'))
+        ) #Tengo mis dudas si este sort funciona
+
+        params_for_builder = []
+        for param_name, param_config in sorted_params:
+            param_info = {
+                "name": param_name,
+                "location": param_config.get("location"),
+                "param_key": param_config.get("param", {}).get("key"),
+                "format": param_config.get("format"),
+                "default_value": param_config.get("param", {}).get("defaultValue"),
+                "order": param_config.get("order")
+            }
+            params_for_builder.append(param_info)
 
         search_url_built = self.url_search_builder.build_url(
             initial_url,
             search_location,
             encoded_query,
             search_param,
-            pagination_param__location,
-            pagination_params_name_and_initial_value,
+            params_for_builder,
             page
         )
 

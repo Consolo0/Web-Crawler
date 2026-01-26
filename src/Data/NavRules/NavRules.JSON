@@ -8,15 +8,20 @@
             "QueryParamMapping": {
                 "search": {
                     "location": "path",
-                    "transform": "slug"
+                    "transform": "slug",
+                    "order": 0
                 },
-                "page": {
-                    "location": "query",
-                    "param": {
-                        "_desde": {
+                "other_params": {
+                    "page": {
+                        "location": "path",
+                        "param": {
+                            "key": "Desde",
                             "type": "offset",
                             "defaultValue": 48
-                        }
+                        },
+                        "format": "{key}_{value}_No_Index_True",
+                        "order": 1,
+                        "beforeKeyUnion": "_"
                     }
                 }
             },
@@ -40,15 +45,20 @@
                 "search": {
                     "location": "query",
                     "transform": "urlencode",
-                    "param": "Ntt"
+                    "param": "Ntt",
+                    "order": 0
                 },
-                "page": {
-                    "location": "query",
-                    "param": {
-                        "page": {
+                "other_params": {
+                    "page": {
+                        "location": "query",
+                        "param": {
+                            "key": "page",
                             "type": "page",
                             "defaultValue": 1
-                        }
+                        },
+                        "format": "{key}={value}",
+                        "order": 1,
+                        "beforeKeyUnion": "&"
                     }
                 }
             },
@@ -81,15 +91,20 @@
                 "search": {
                     "location": "query",
                     "transform": "urlencode",
-                    "param": "q"
+                    "param": "q",
+                    "order": 0
                 },
-                "page": {
-                    "location": "query",
-                    "param": {
-                        "page": {
+                "other_params": {
+                    "page": {
+                        "location": "query",
+                        "param": {
+                            "key": "page",
                             "type": "page",
                             "defaultValue": 1
-                        }
+                        },
+                        "format": "{key}={value}",
+                        "order": 1,
+                        "beforeKeyUnion": "&"
                     }
                 }
             },
@@ -120,15 +135,31 @@
             "QueryParamMapping": {
                 "search": {
                     "location": "path",
-                    "transform": "urlencode"
+                    "transform": "urlencode",
+                    "order": 0
                 },
-                "page": {
-                    "location": "query",
-                    "param": {
-                        "page": {
+                "other_params": {
+                    "sort": {
+                        "location": "query",
+                        "param": {
+                            "key": "sort",
+                            "type": "sort",
+                            "defaultValue": "relevance_desc"
+                        },
+                        "format": "{key}={value}",
+                        "order": 1,
+                        "beforeKeyUnion": "&"
+                    },
+                    "page": {
+                        "location": "query",
+                        "param": {
+                            "key": "page",
                             "type": "page",
                             "defaultValue": 1
-                        }
+                        },
+                        "format": "{key}={value}",
+                        "order": 2,
+                        "beforeKeyUnion": "&"
                     }
                 }
             },
@@ -156,21 +187,26 @@
         {
             "AssociatedSource": "LIDER",
             "NavType": "search",
-            "SubDomain": "www",
-            "UrlTemplate": "https://www.lider.cl/supermercado/search",
+            "SubDomain": "super",
+            "UrlTemplate": "https://super.lider.cl/search",
             "QueryParamMapping": {
                 "search": {
                     "location": "query",
                     "transform": "urlencode",
-                    "param": "q"
+                    "param": "q",
+                    "order": 0
                 },
-                "page": {
-                    "location": "query",
-                    "param": {
-                        "page": {
+                "other_params": {
+                    "page": {
+                        "location": "query",
+                        "param": {
+                            "key": "page",
                             "type": "page",
                             "defaultValue": 1
-                        }
+                        },
+                        "format": "{key}={value}",
+                        "order": 1,
+                        "beforeKeyUnion": "&"
                     }
                 }
             },
@@ -182,8 +218,8 @@
         {
             "AssociatedSource": "LIDER",
             "NavType": "category",
-            "SubDomain": "www",
-            "UrlTemplate": "https://www.lider.cl/supermercado/category/{category}",
+            "SubDomain": "super",
+            "UrlTemplate": "https://super.lider.cl/browse/{category}",
             "Selectors": "a[href*='/p/']",
             "PaginationType": "page",
             "StartPage": 1,
@@ -192,7 +228,7 @@
         {
             "AssociatedSource": "LIDER",
             "NavType": "product",
-            "SubDomain": "www",
+            "SubDomain": "super",
             "Selectors": "h1"
         }
     ]
