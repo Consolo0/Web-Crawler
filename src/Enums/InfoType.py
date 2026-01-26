@@ -4,4 +4,3 @@ class InfoType(Enum):
     Stock = "Stock"
     Rating = "Rating"
     ProductTitle = "ProductTitle"
-    NumberCategory = [Price, Stock, Rating]

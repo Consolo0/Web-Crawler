@@ -11,3 +11,5 @@ class DFSNavigator(AbstractNavigator):
         return None
     def is_empty(self) -> bool:
         return len(self.urls) == 0
+    def __str__(self):
+        return str(self.urls)

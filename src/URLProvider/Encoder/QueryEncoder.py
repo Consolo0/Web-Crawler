@@ -3,7 +3,8 @@ class QueryEncoder:
     def __init__(self):
         self.encodings = {
             "slug": self.slug_encode,
-            "url": self.url_encode
+            "url": self.url_encode,
+            "urlencode": self.url_encode  # Map urlencode to url_encode
         }
 
     def encode(self, query: str, encoding_type: str) -> str:

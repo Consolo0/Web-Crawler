@@ -8,3 +8,13 @@ class ResultIntegrator:
     def add_result(self, source_id, url, data):
         if data:
             self.results[source_id][url] = data
+
+    def retrieve_dict(self):
+        existing_keys = self.results.keys()
+        return {self.results[key] for key in existing_keys}
+
+    def stringify_result(self):
+        return str(self.retrieve_dict())
+    
+    def __str__(self):
+        return self.stringify_result()

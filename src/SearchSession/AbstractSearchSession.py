@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from src.SearchSession.Status.SessionStatus import SessionStatus
 
 class AbstractSearchSession(ABC):
-    def __init__(self, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
+    def __init__(self, query, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
+        self.query = query
         self.start_time = None
         self.end_time = None
         self.total_time = 0

@@ -5,19 +5,20 @@ from datetime import datetime
 from src.URLProvider.Sources.SourceOrchestator import SourceOrchestator
 from src.URLProvider.URL.URLGenerator import URLGenerator
 from src.CrawlerProcess.Crawler import Crawler
+from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 
 class SearchSession(AbstractSearchSession):
-    def __init__(self, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
-        super().__init__(error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
+    def __init__(self, query, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
+        super().__init__(query, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
 
-    def execute(self, query: str, db: Db) -> dict:
+    def execute(self, query: str, db: Db) -> ResultIntegrator:
         self.start_time = datetime.now()
 
         try:
             source_orchestator = SourceOrchestator(db)
             sources_metadata = source_orchestator.get_sources()
 
-            url_generator = URLGenerator(sources_metadata, query, self.associated_navigation_strategy)
+            url_generator = URLGenerator(sources_metadata, self.query, self.associated_navigation_strategy)
             navigator = url_generator.run()
             
             crawler = Crawler(navigator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler, self.associated_stop_criteria )
@@ -26,7 +27,7 @@ class SearchSession(AbstractSearchSession):
 
         except Exception as e:
             self.status = SessionStatus.ABORTED
-            self.error_handler.handle(e)
+            self.error_handler.add_element(e)
             results = {}
 
         self.end_time = datetime.now()

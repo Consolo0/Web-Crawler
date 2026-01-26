@@ -3,7 +3,7 @@ import re
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
 from src.CrawlerProcess.Fetch.Fetcher import Fetcher
 from src.CrawlerProcess.TextNormalizer.TextNormalizer import TextNormalizer
-from src.Enums.InfoType import InfoType
+from src.Enums.InfoCategories import InfoCategories
 from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 
 class Crawler:
@@ -23,7 +23,7 @@ class Crawler:
         self.errors_per_sources = defaultdict(int)
         self.results = ResultIntegrator()
 
-    def crawl(self):
+    def crawl(self) -> ResultIntegrator:
 
         while not self.navigator.is_empty():
             source_id, url, level, page_type = self.navigator.get_element()
@@ -130,7 +130,8 @@ class Crawler:
                     extracted[entity] = value
                     break
         
-        for numberInfoType in InfoType.NumberCategory:
+        for key in InfoCategories.NumberCategory:
+            numberInfoType = key.value
             extracted[numberInfoType] = TextNormalizer.normalize(
                 extracted[numberInfoType]
             )
