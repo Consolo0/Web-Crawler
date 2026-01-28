@@ -19,7 +19,7 @@
                             "type": "offset",
                             "defaultValue": 48
                         },
-                        "format": "{key}_{value}_No_Index_True",
+                        "format": "{key}_{value}_NoIndex_True",
                         "order": 1,
                         "beforeKeyUnion": "_"
                     }
