@@ -5,7 +5,7 @@
         "Name": "Mercado Libre",
         "Domain": "mercadolibre.cl",
         "IsActive": true,
-        "RequireJS": false
+        "RequireJS": true
         },
         {
             "ID": "FALABELLA",
@@ -33,7 +33,7 @@
             "Name": "Lider",
             "Domain": "lider.cl",
             "IsActive": true,
-            "RequireJS": false
+            "RequireJS": true
         }
     ]
 } 

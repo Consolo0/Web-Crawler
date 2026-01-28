@@ -54,7 +54,7 @@ class URLSearchBuilder:
                 on_path.append((formatted_param, before_key_union))
 
             elif location == "query":
-                if order == 0 and not on_query:
+                if not on_query:
                     on_query.append((formatted_param, '?'))
                 else:
                     on_query.append((formatted_param, '&'))

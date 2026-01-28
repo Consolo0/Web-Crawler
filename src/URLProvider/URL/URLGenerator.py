@@ -16,7 +16,6 @@ class URLGenerator:
     def run(self) -> AbstractNavigator:
         navigator = NavigatorOrchestrator.get_navigator(self.navigation_strategy.type)
         sources = self.sources_metadata.keys()
-        print(f"URLGenerator - Processing sources: {list(sources)}")
 
         for source in sources:
             try:
