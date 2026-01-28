@@ -1,4 +1,3 @@
-from src.Error.NotExpectedType import NotExpectedType
 from src.Error.NegativeNumber import NegativeNumber
 
 class URLSearchBuilder:
@@ -39,14 +38,14 @@ class URLSearchBuilder:
             before_key_union = param_info.get("before_key_union", "")
             order = param_info.get("order", None)
 
-            # Calculate the value based on page number
-            pagination_type = param_info["type"]
-            if pagination_type == "page":
+            # Calculate the value based on page number if the param is pagination related
+            param_type = param_info["type"]
+            if param_type == "page":
                 value = page
-            elif pagination_type == "offset":
+            elif param_type == "offset":
                 value = default_value * page
             else:
-                raise NotExpectedType("offset or page", pagination_type)
+                value = default_value
 
             # Format the parameter using the format string
             formatted_param = format_str.format(key=param_key, value=value)
