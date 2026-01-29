@@ -1,6 +1,6 @@
 import re
 from decimal import Decimal, InvalidOperation
-
+import traceback
 
 class TextNormalizer:
 
@@ -35,6 +35,7 @@ class TextNormalizer:
         try:
             return Decimal(cleaned)
         except InvalidOperation:
+            traceback.print_exc()
             return None
 
     @staticmethod
@@ -53,6 +54,7 @@ class TextNormalizer:
         try:
             return float(cleaned)
         except ValueError:
+            traceback.print_exc()
             return None
 
     @staticmethod

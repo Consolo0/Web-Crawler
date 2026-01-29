@@ -21,11 +21,13 @@ class SearchSession(AbstractSearchSession):
             url_generator = URLGenerator(sources_metadata, self.query, self.associated_navigation_strategy)
             navigator = url_generator.run()
             
-            crawler = Crawler(navigator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler, self.associated_stop_criteria, debug_mode = True)
+            crawler = Crawler(navigator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler, self.associated_stop_criteria)
             results = crawler.crawl() #lo que entrega muy probablemente cambie
             self.status = SessionStatus.FINISHED
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             self.status = SessionStatus.ABORTED
             self.error_handler.add_element(e)
             results = {}

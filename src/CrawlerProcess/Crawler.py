@@ -1,5 +1,6 @@
 from collections import defaultdict
 import re
+import traceback
 from pathlib import Path
 from bs4 import BeautifulSoup
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
@@ -12,7 +13,7 @@ from src.CrawlerProcess.ListingProcessors.ListingProcessorFactory import Listing
 class Crawler:
 
     def __init__(self, navigator, sources_metadata, error_handler,
-        page_visit_handler, price_handler, stop_criteria, debug_mode=False, debug_dir="debug_html"):
+        page_visit_handler, price_handler, stop_criteria):
 
         self.navigator = navigator
         self.sources_rules = sources_metadata
@@ -22,21 +23,23 @@ class Crawler:
         self.cut_evaluator = CutEvaluator(stop_criteria)
         self.url_visited = set()
         self.fetcher = Fetcher()
-        self.debug_mode = debug_mode
-        self.debug_dir = Path(debug_dir)
-        
-        if self.debug_mode:
-            self.debug_dir.mkdir(parents=True, exist_ok=True)
+
 
         self.results = ResultIntegrator()
         
         # Initialize the listing processors (JSON extraction for each website)
-        ListingProcessorFactory.initialize_default_processors(debug_mode=debug_mode)
+        ListingProcessorFactory.initialize_default_processors()
         self.processor_factory = ListingProcessorFactory()
 
     def crawl(self) -> ResultIntegrator:
-        contador = 0
+
         while not self.navigator.is_empty():
+
+            if not self.cut_evaluator.should_continue(
+                self.error_handler.get_length()
+            ):
+                break
+    
             source_id, url, level, page_type = self.navigator.get_element()
 
             if url in self.url_visited:
@@ -46,27 +49,17 @@ class Crawler:
             if not source_ctx:
                 continue
 
-            """if not self._is_url_allowed(url, source_ctx["ValidationRules"]):
-                continue"""
-        
             try:
                 html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
-                
-                if self.debug_mode:
-                    self._save_debug_html(source_id, url, html, page_type)
-                
-                if contador == 0:
-                    print(f"HTML saved to debug folder. Check {self.debug_dir} for formatted HTML files.")
-                    contador += 1
-                    if self.debug_mode:
-                        return {}
+            
+                if not html:
+                    raise NoHTML()
 
             except Exception as e:
+                traceback.print_exc()
                 self.error_handler.add_element((source_id, url, e))
                 continue
-            
-            if not html:
-                continue
+
             self.url_visited.add(url) 
 
             if page_type in ("search", "category"):
@@ -86,20 +79,8 @@ class Crawler:
                 )
 
                 self.results.add_result(source_id, url, data)
-            
-            if not self.cut_evaluator.should_continue(
-                self.error_handler.add_element((source_id, url, "Cut criteria met"))
-            ):
-                break
         
         return self.results
-
-    def _is_url_allowed(self, url, validation_rules):
-        for rule in validation_rules:
-            for pattern in rule.get("AllowedPaths", []):
-                if re.search(pattern, url):
-                    return True
-        return False
     
     def _save_debug_html(self, source_id, url, html, page_type):
         """Save HTML to a formatted file for debugging"""
@@ -112,11 +93,9 @@ class Crawler:
             formatted_html = soup.prettify()
             
             filepath.write_text(formatted_html, encoding="utf-8")
-            print(f"✓ Saved: {filepath}")
-            print(f"  URL: {url}")
             
         except Exception as e:
-            print(f"Error saving debug HTML: {e}")
+            traceback.print_exc()
     
     def _process_listing_page(self, source_id, html, nav_rules, level):
         """
@@ -127,22 +106,23 @@ class Crawler:
         - Otherwise, fall back to CSS selectors
         """
         # Get the processor for this source
-        processor = self.processor_factory.get_processor(source_id, debug_mode=self.debug_mode)
-        
-        # Extract product URLs
-        product_urls = processor.extract_product_urls(html)
-        
-        if not product_urls and self.debug_mode:
-            print(f"  ⚠ No products extracted from {source_id}")
-        
-        # Add each product URL to the crawler queue
-        for url in product_urls:
-            self.navigator.add_element(
-                source_id=source_id,
-                url=url,
-                level=level + 1,
-                page_type="product"
-            )
+        try:
+            processor = self.processor_factory.get_processor(source_id)
+            
+            # Extract product URLs
+            product_urls = processor.extract_product_urls(html)
+            
+            
+            # Add each product URL to the crawler queue
+            for url in product_urls:
+                self.navigator.add(
+                    source=source_id,
+                    url=url,
+                    level=level + 1,
+                    page_type="product"
+                )
+        except Exception as e:
+            traceback.print_exc()
     
     def _process_product_page(self, html, extraction_rules):
         extracted = {}
@@ -160,9 +140,6 @@ class Crawler:
 
                 nodes = html.select(selector)
                 
-                if self.debug_mode and not nodes:
-                    print(f"  ⚠ Selector failed for {entity}: '{selector}'")
-                
                 if not nodes:
                     continue
 
@@ -175,8 +152,6 @@ class Crawler:
 
                 if value:
                     extracted[entity] = value
-                    if self.debug_mode:
-                        print(f"  ✓ Found {entity}: {value[:50]}...")
                     break
         
         for key in InfoCategories.NumberCategory:

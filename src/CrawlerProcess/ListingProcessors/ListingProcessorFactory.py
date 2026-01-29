@@ -1,7 +1,11 @@
 from typing import Dict
+from Error.NoRelatedProcessor import NoRelatedProcessor
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 from src.CrawlerProcess.ListingProcessors.MercadoLibreProcessor import MercadoLibreProcessor
 from src.CrawlerProcess.ListingProcessors.FalabellaProcessor import FalabellaProcessor
+from src.CrawlerProcess.ListingProcessors.LiderProcessor import LiderProcessor
+from src.CrawlerProcess.ListingProcessors.RipleyProcessor import RipleyProcessor
+from CrawlerProcess.ListingProcessors.ParisProcessor import ParisProcessor
 
 
 class ListingProcessorFactory:
@@ -31,7 +35,7 @@ class ListingProcessorFactory:
         cls._processors[source_id] = processor
     
     @classmethod
-    def get_processor(cls, source_id: str, debug_mode: bool = False) -> AbstractListingProcessor:
+    def get_processor(cls, source_id: str) -> AbstractListingProcessor:
         """
         Get the processor for a source.
         If not found, return a default CSS selector processor.
@@ -39,18 +43,16 @@ class ListingProcessorFactory:
         if source_id in cls._processors:
             return cls._processors[source_id]
         
-        # Default: return a generic CSS selector processor
-        from src.CrawlerProcess.ListingProcessors.CSSProcessors import CSSListingProcessor
-        return CSSListingProcessor(debug_mode=debug_mode)
-    
+        raise NoRelatedProcessor(f"No processor for source: {source_id}")
+
     @classmethod
-    def initialize_default_processors(cls, debug_mode: bool = False):
+    def initialize_default_processors(cls):
         """
         Initialize default processors for known sources.
         Call this once when your app starts.
         """
-        cls.register_processor("MERCADOLIBRE", MercadoLibreProcessor(debug_mode=debug_mode))
-        cls.register_processor("FALABELLA", FalabellaProcessor(debug_mode=debug_mode))
-        # Add more here as needed:
-        # cls.register_processor("PARIS", ParisProcessor(debug_mode=debug_mode))
-        # cls.register_processor("RIPLEY", RipleyProcessor(debug_mode=debug_mode))
+        cls.register_processor("MERCADOLIBRE", MercadoLibreProcessor())
+        cls.register_processor("FALABELLA", FalabellaProcessor())
+        cls.register_processor("LIDER", LiderProcessor())
+        cls.register_processor("RIPLEY", RipleyProcessor())
+        cls.register_processor("PARIS", ParisProcessor())

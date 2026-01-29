@@ -17,6 +17,10 @@ class AbstractHandler(ABC):
     @abstractmethod
     def pop(self, index):
         pass
+    
+    def get_length(self):
+        return len(self.elements)
+    
     def save_in_db(self, db: Db, collection_name: str) -> bool:
         for element in self.elements:
             collection_saved, _ = db.save(element, collection_name)

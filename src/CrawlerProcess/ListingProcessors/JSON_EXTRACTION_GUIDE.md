@@ -164,7 +164,7 @@ class ParisProcessor(AbstractListingProcessor):
 **Step 4: Register the processor**
 ```python
 # In ListingProcessorFactory.initialize_default_processors():
-cls.register_processor("PARIS", ParisProcessor(debug_mode=debug_mode))
+cls.register_processor("PARIS", ParisProcessor())
 ```
 
 **That's it! No changes needed to Crawler.py**

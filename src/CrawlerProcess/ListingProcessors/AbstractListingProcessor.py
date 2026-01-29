@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Dict, Optional
 import json
 import re
-
+import traceback
 
 class AbstractListingProcessor(ABC):
     """
@@ -11,10 +11,7 @@ class AbstractListingProcessor(ABC):
     Each website (MercadoLibre, Falabella, etc.) has a different structure,
     so we create a specific processor for each one.
     """
-    
-    def __init__(self, debug_mode: bool = False):
-        self.debug_mode = debug_mode
-    
+
     @abstractmethod
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
@@ -48,8 +45,7 @@ class AbstractListingProcessor(ABC):
                 json_str = match.group(1)
                 return json.loads(json_str)
         except (json.JSONDecodeError, AttributeError, IndexError) as e:
-            if self.debug_mode:
-                print(f"  ⚠ Failed to extract JSON: {e}")
+            traceback.print_exc()
         return None
     
     def _extract_links_from_css(self, html_soup, selectors: str) -> List[str]:
@@ -71,6 +67,6 @@ class AbstractListingProcessor(ABC):
                 if href:
                     links.append(href)
         except Exception as e:
-            if self.debug_mode:
-                print(f"  ⚠ CSS selector failed: {e}")
+            traceback.print_exc()
+
         return links

@@ -22,15 +22,10 @@ class MercadoLibreProcessor(AbstractListingProcessor):
         event_data = self._extract_json_from_html(html_content, json_pattern)
         
         if not event_data:
-            if self.debug_mode:
-                print("  ⚠ Could not find MercadoLibre event_data JSON")
             return []
         
         # Step 2: Extract product IDs from the results array
         product_ids = event_data.get("results", [])
-        
-        if self.debug_mode:
-            print(f"  ✓ Found {len(product_ids)} products via JSON extraction")
         
         # Step 3: Build product URLs from IDs
         # Format: https://listado.mercadolibre.cl/[ITEM_ID]-...

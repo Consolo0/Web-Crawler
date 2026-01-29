@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class AbstractNavigator(ABC):
     @abstractmethod
-    def add(self, source, element, level, page_type):
+    def add(self, source, url, level, page_type):
         pass
     @abstractmethod
     def get_element(self):

@@ -43,11 +43,19 @@ class Fetcher:
             )
             page = context.new_page()
 
-            page.goto(
-                url,
-                timeout=self.timeout_seconds * 1000,
-                wait_until="networkidle",
-            )
+            try:
+                page.goto(
+                    url,
+                    timeout=self.timeout_seconds * 1000,
+                    wait_until="networkidle",
+                )
+            except Exception as e:
+                # If networkidle times out, try with domcontentloaded (faster)
+                page.goto(
+                    url,
+                    timeout=self.timeout_seconds * 1000,
+                    wait_until="domcontentloaded",
+                )
 
             html = page.content()
 

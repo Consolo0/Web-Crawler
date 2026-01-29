@@ -2,17 +2,17 @@ from typing import List
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 import traceback
 
-class FalabellaProcessor(AbstractListingProcessor):
+class RipleyProcessor(AbstractListingProcessor):
     """
-    Processor for Falabella.com search listings.
+    Processor for Ripley search listings.
     
-    Falabella uses Chakra UI with dynamic product loading.
-    Looks for product links in the page structure.
+    Ripley uses React with dynamic content loading.
+    Looks for product containers and extracts URLs from links.
     """
     
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
-        Extract product URLs from Falabella listing pages.
+        Extract product URLs from Ripley listing pages.
         
         Args:
             html_content: HTML content of the listing page
@@ -28,14 +28,14 @@ class FalabellaProcessor(AbstractListingProcessor):
         soup = BeautifulSoup(html_content, "html.parser")
         urls = []
         
-        # Falabella product URLs follow pattern: /product/ or /p/
+        # Ripley product URLs follow pattern: /p/productname-productid
+        # Look for all links that match Ripley's product URL pattern
         selectors = [
-            'a[href*="/product/"]',        # Product pattern
-            'a[href*="/p/"]',
-            'a[href*="falabella"]',
+            'a[href*="/p/"]',              # Product link pattern: /p/name-id
             'a.product-link',
-            'a[data-testid*="product"]',
-            'div[class*="product"] a[href]',
+            'a.item-link',
+            'div.catalog-product-item a',
+            'div[class*="product"] a[href*="ripley"]',
         ]
         
         for selector in selectors:
@@ -43,16 +43,16 @@ class FalabellaProcessor(AbstractListingProcessor):
                 links = soup.select(selector)
                 for link in links:
                     href = link.get("href")
-                    if href and any(x in href.lower() for x in ["product", "/p/"]):
+                    if href and "/p/" in href:
                         # Ensure absolute URL
                         if not href.startswith("http"):
                             if href.startswith("/"):
-                                href = "https://falabella.com" + href
+                                href = "https://simple.ripley.cl" + href
                             else:
-                                href = "https://falabella.com/" + href
+                                href = "https://simple.ripley.cl/" + href
                         
-                        # Avoid duplicates and ensure it's a product page
-                        if href not in urls and "falabella" in href and "#" not in href:
+                        # Avoid duplicates
+                        if href not in urls and "ripley.cl" in href:
                             urls.append(href)
             except Exception as e:
                 traceback.print_exc()

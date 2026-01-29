@@ -1,18 +1,19 @@
+import traceback
 from typing import List
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
-import traceback
 
-class FalabellaProcessor(AbstractListingProcessor):
+
+class ParisProcessor(AbstractListingProcessor):
     """
-    Processor for Falabella.com search listings.
+    Processor for Paris.cl search listings.
     
-    Falabella uses Chakra UI with dynamic product loading.
+    Paris uses Chakra UI with dynamic product loading.
     Looks for product links in the page structure.
     """
     
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
-        Extract product URLs from Falabella listing pages.
+        Extract product URLs from Paris listing pages.
         
         Args:
             html_content: HTML content of the listing page
@@ -28,11 +29,10 @@ class FalabellaProcessor(AbstractListingProcessor):
         soup = BeautifulSoup(html_content, "html.parser")
         urls = []
         
-        # Falabella product URLs follow pattern: /product/ or /p/
+        # Paris product URLs follow pattern: /producto/
         selectors = [
-            'a[href*="/product/"]',        # Product pattern
-            'a[href*="/p/"]',
-            'a[href*="falabella"]',
+            'a[href*="/producto/"]',       # Main product pattern
+            'a[href*="paris.cl/producto"]',
             'a.product-link',
             'a[data-testid*="product"]',
             'div[class*="product"] a[href]',
@@ -43,16 +43,16 @@ class FalabellaProcessor(AbstractListingProcessor):
                 links = soup.select(selector)
                 for link in links:
                     href = link.get("href")
-                    if href and any(x in href.lower() for x in ["product", "/p/"]):
+                    if href and ("producto" in href or "product" in href.lower()):
                         # Ensure absolute URL
                         if not href.startswith("http"):
                             if href.startswith("/"):
-                                href = "https://falabella.com" + href
+                                href = "https://paris.cl" + href
                             else:
-                                href = "https://falabella.com/" + href
+                                href = "https://paris.cl/" + href
                         
-                        # Avoid duplicates and ensure it's a product page
-                        if href not in urls and "falabella" in href and "#" not in href:
+                        # Avoid duplicates
+                        if href not in urls and "paris.cl" in href:
                             urls.append(href)
             except Exception as e:
                 traceback.print_exc()
