@@ -1,8 +1,7 @@
 from collections import defaultdict
-import re
 import traceback
-from pathlib import Path
 from bs4 import BeautifulSoup
+from Error.NoHTML import NoHTML
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
 from src.CrawlerProcess.Fetch.Fetcher import Fetcher
 from src.CrawlerProcess.TextNormalizer.TextNormalizer import TextNormalizer
@@ -53,7 +52,7 @@ class Crawler:
                 html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
             
                 if not html:
-                    raise NoHTML()
+                    raise NoHTML(f"No HTML fetched for URL: {url}")
 
             except Exception as e:
                 traceback.print_exc()

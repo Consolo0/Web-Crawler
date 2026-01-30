@@ -11,6 +11,8 @@ class SourceOrchestator:
         source_context = {}
 
         for source in sources:
+            if source.get("IsActive") is False:
+                continue
             source = MappingProxyType(source)
             
             nav_rules = [MappingProxyType(rule)
