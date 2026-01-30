@@ -50,6 +50,8 @@ class Crawler:
 
             try:
                 html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
+
+                print(f"In the URL: {url} | Fetched HTML length: {len(html)}")
             
                 if not html:
                     raise NoHTML(f"No HTML fetched for URL: {url}")
@@ -66,7 +68,6 @@ class Crawler:
                 self._process_listing_page(
                     source_id,
                     html,
-                    source_ctx["NavRules"],
                     level
                 )
 
@@ -88,7 +89,7 @@ class Crawler:
             filepath = self.debug_dir / filename
             
             # Pretty print the HTML
-            soup = BeautifulSoup(str(html), "html.parser")
+            soup = BeautifulSoup(html, "html.parser")
             formatted_html = soup.prettify()
             
             filepath.write_text(formatted_html, encoding="utf-8")
@@ -96,7 +97,7 @@ class Crawler:
         except Exception as e:
             traceback.print_exc()
     
-    def _process_listing_page(self, source_id, html, nav_rules, level):
+    def _process_listing_page(self, source_id, html, level):
         """
         Process a listing page to extract product links.
         
@@ -124,6 +125,18 @@ class Crawler:
             traceback.print_exc()
     
     def _process_product_page(self, html, extraction_rules):
+        """
+        Process a product page to extract product information.
+        Expects html as a string, converts to BeautifulSoup for parsing.
+        """
+        from bs4 import BeautifulSoup
+        
+        # Convert HTML string to BeautifulSoup if needed
+        if isinstance(html, str):
+            soup = BeautifulSoup(html, "html.parser")
+        else:
+            soup = html
+        
         extracted = {}
 
         rules_by_entity = defaultdict(list)
@@ -137,7 +150,7 @@ class Crawler:
                 selector = rule["Selector"]
                 attr = rule["Attribute"]
 
-                nodes = html.select(selector)
+                nodes = soup.select(selector)
                 
                 if not nodes:
                     continue
@@ -153,10 +166,9 @@ class Crawler:
                     extracted[entity] = value
                     break
         
-        for key in InfoCategories.NumberCategory:
-            numberInfoType = key.value
-            extracted[numberInfoType] = TextNormalizer.normalize(
-                extracted[numberInfoType]
+        for info_type in InfoCategories.NumberCategory.value:
+            extracted[info_type.value] = TextNormalizer.normalize(
+                extracted.get(info_type.value, "")
             )
             
         return extracted

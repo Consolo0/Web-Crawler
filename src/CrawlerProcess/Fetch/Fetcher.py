@@ -21,8 +21,8 @@ class Fetcher:
     def fetch(self, url: str, uses_js: bool) -> str:
 
         if uses_js:
-            return BeautifulSoup(self._fetch_with_js(url), "html.parser")
-        return BeautifulSoup(self._fetch_without_js(url), "html.parser")
+            return self._fetch_with_js(url)
+        return self._fetch_without_js(url)
 
     def _fetch_without_js(self, url: str) -> str:
 
