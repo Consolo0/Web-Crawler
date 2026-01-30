@@ -1,11 +1,11 @@
 from typing import Dict
-from Error.NoRelatedProcessor import NoRelatedProcessor
+from src.Error.NoRelatedProcessor import NoRelatedProcessor
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 from src.CrawlerProcess.ListingProcessors.MercadoLibreProcessor import MercadoLibreProcessor
 from src.CrawlerProcess.ListingProcessors.FalabellaProcessor import FalabellaProcessor
 from src.CrawlerProcess.ListingProcessors.LiderProcessor import LiderProcessor
 from src.CrawlerProcess.ListingProcessors.RipleyProcessor import RipleyProcessor
-from CrawlerProcess.ListingProcessors.ParisProcessor import ParisProcessor
+from src.CrawlerProcess.ListingProcessors.ParisProcessor import ParisProcessor
 
 
 class ListingProcessorFactory:

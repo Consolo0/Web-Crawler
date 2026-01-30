@@ -1,7 +1,7 @@
 from collections import defaultdict
 import traceback
 from bs4 import BeautifulSoup
-from Error.NoHTML import NoHTML
+from src.Error.NoHTML import NoHTML
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
 from src.CrawlerProcess.Fetch.Fetcher import Fetcher
 from src.CrawlerProcess.TextNormalizer.TextNormalizer import TextNormalizer
