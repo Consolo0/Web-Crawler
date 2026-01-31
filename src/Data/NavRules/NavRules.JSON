@@ -135,7 +135,7 @@
             "QueryParamMapping": {
                 "search": {
                     "location": "path",
-                    "transform": "urlencode",
+                    "transform": "percentencode",
                     "order": 0
                 },
                 "other_params": {
