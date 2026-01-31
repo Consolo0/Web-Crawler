@@ -1,61 +1,35 @@
 from typing import List
+from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
-import traceback
+
 
 class FalabellaProcessor(AbstractListingProcessor):
     """
     Processor for Falabella.com search listings.
     
-    Falabella uses Chakra UI with dynamic product loading.
-    Looks for product links in the page structure.
+    Product links are in <a class="pod-link"> tags with href attributes.
     """
     
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
         Extract product URLs from Falabella listing pages.
         
-        Args:
-            html_content: HTML content of the listing page
-            
-        Returns:
-            List of product URLs
+        Looks for <a class="pod-link"> tags which contain product URLs.
         """
-        from bs4 import BeautifulSoup
-        
         if not html_content:
             return []
         
         soup = BeautifulSoup(html_content, "html.parser")
         urls = []
         
-        # Falabella product URLs follow pattern: /product/ or /p/
-        selectors = [
-            'a[href*="/product/"]',        # Product pattern
-            'a[href*="/p/"]',
-            'a[href*="falabella"]',
-            'a.product-link',
-            'a[data-testid*="product"]',
-            'div[class*="product"] a[href]',
-        ]
+        # Find all product links - the main selector for Falabella product cards
+        product_links = soup.select("a.pod-link")
         
-        for selector in selectors:
-            try:
-                links = soup.select(selector)
-                for link in links:
-                    href = link.get("href")
-                    if href and any(x in href.lower() for x in ["product", "/p/"]):
-                        # Ensure absolute URL
-                        if not href.startswith("http"):
-                            if href.startswith("/"):
-                                href = "https://falabella.com" + href
-                            else:
-                                href = "https://falabella.com/" + href
-                        
-                        # Avoid duplicates and ensure it's a product page
-                        if href not in urls and "falabella" in href and "#" not in href:
-                            urls.append(href)
-            except Exception as e:
-                traceback.print_exc()
-                continue
+        for link in product_links:
+            href = link.get("href")
+            if href:
+                # Clean up the URL (remove tracking parameters if needed, but keep the base URL)
+                # URLs come with sponsoredClickData parameter but that's fine
+                urls.append(href)
         
-        return urls[:100]  # Limit to 100 products per page
+        return urls
