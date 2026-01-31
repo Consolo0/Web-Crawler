@@ -1,5 +1,5 @@
-import traceback
 from typing import List
+from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 
 
@@ -7,55 +7,29 @@ class ParisProcessor(AbstractListingProcessor):
     """
     Processor for Paris.cl search listings.
     
-    Paris uses Chakra UI with dynamic product loading.
-    Looks for product links in the page structure.
+    Product links are in <a class="pod pod-link"> tags with href attributes.
     """
     
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
-        Extract product URLs from Paris listing pages.
+        Extract product URLs from Paris (Falabella) listing pages.
         
-        Args:
-            html_content: HTML content of the listing page
-            
-        Returns:
-            List of product URLs
+        Looks for <a class="pod-link"> tags which contain product URLs.
         """
-        from bs4 import BeautifulSoup
-        
         if not html_content:
             return []
         
         soup = BeautifulSoup(html_content, "html.parser")
         urls = []
         
-        # Paris product URLs follow pattern: /producto/
-        selectors = [
-            'a[href*="/producto/"]',       # Main product pattern
-            'a[href*="paris.cl/producto"]',
-            'a.product-link',
-            'a[data-testid*="product"]',
-            'div[class*="product"] a[href]',
-        ]
+        # Find all product links - the main selector for Paris product cards
+        product_links = soup.select("a.pod-link")
         
-        for selector in selectors:
-            try:
-                links = soup.select(selector)
-                for link in links:
-                    href = link.get("href")
-                    if href and ("producto" in href or "product" in href.lower()):
-                        # Ensure absolute URL
-                        if not href.startswith("http"):
-                            if href.startswith("/"):
-                                href = "https://paris.cl" + href
-                            else:
-                                href = "https://paris.cl/" + href
-                        
-                        # Avoid duplicates
-                        if href not in urls and "paris.cl" in href:
-                            urls.append(href)
-            except Exception as e:
-                traceback.print_exc()
-                continue
+        for link in product_links:
+            href = link.get("href")
+            if href:
+                # Clean up the URL (remove tracking parameters if needed, but keep the base URL)
+                # URLs come with sponsoredClickData parameter but that's fine
+                urls.append(href)
         
-        return urls[:100]  # Limit to 100 products per page
+        return urls
