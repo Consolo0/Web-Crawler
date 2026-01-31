@@ -25,7 +25,7 @@
             "ID": "RIPLEY",
             "Name": "Ripley Chile",
             "BaseDomain": "ripley.cl",
-            "IsActive": true,
+            "IsActive": false,
             "RequireJS": true
         },
         {
