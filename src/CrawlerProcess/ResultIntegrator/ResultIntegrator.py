@@ -10,8 +10,7 @@ class ResultIntegrator:
             self.results[source_id][url] = data
 
     def retrieve_dict(self):
-        existing_keys = self.results.keys()
-        return {self.results[key] for key in existing_keys}
+        return [self.results[key] for key in self.results.keys()]
 
     def stringify_result(self):
         return str(self.retrieve_dict())
