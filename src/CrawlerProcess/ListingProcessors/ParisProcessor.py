@@ -60,13 +60,16 @@ class ParisProcessor(AbstractListingProcessor):
             title_tag = soup.select_one("h1, [data-test='product-title']")
             if title_tag:
                 title = title_tag.get_text(strip=True)
-        product_info[InfoType.ProductTitle] = title
+        product_info[InfoType.ProductTitle.value] = title
         
         # Extract Price
         price = None
         if json_ld_data and "offers" in json_ld_data:
             # Extract from JSON-LD offers
             offers = json_ld_data.get("offers", [])
+            # Handle both single object and array formats
+            if isinstance(offers, dict):
+                offers = [offers]
             if offers and len(offers) > 0:
                 price = offers[0].get("price")
                 if price:
@@ -82,7 +85,7 @@ class ParisProcessor(AbstractListingProcessor):
                 price_text = price_tag.get_text(strip=True)
                 price = DataExtractor.extract_price_value(price_text)
         
-        product_info[InfoType.Price] = price
+        product_info[InfoType.Price.value] = price
         
         # Extract Stock (Availability)
         stock = None
@@ -99,7 +102,7 @@ class ParisProcessor(AbstractListingProcessor):
                 availability_text = availability_tag.get_text(strip=True).lower()
                 stock = "agotado" not in availability_text and "sin stock" not in availability_text
         
-        product_info[InfoType.Stock] = stock
+        product_info[InfoType.Stock.value] = stock
         
         # Extract Rating
         rating = None
@@ -138,6 +141,6 @@ class ParisProcessor(AbstractListingProcessor):
                 votes = DataExtractor.extract_votes_value(votes_text)
                 rating_data["votes"] = votes
         
-        product_info[InfoType.Rating] = rating_data if (rating_data["rating"] is not None or rating_data["votes"] is not None) else None
+        product_info[InfoType.Rating.value] = rating_data if (rating_data["rating"] is not None or rating_data["votes"] is not None) else None
         
         return product_info
