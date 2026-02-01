@@ -1,6 +1,8 @@
 from typing import List
+from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 import traceback
+
 
 class RipleyProcessor(AbstractListingProcessor):
     """
@@ -20,8 +22,6 @@ class RipleyProcessor(AbstractListingProcessor):
         Returns:
             List of product URLs
         """
-        from bs4 import BeautifulSoup
-        
         if not html_content:
             return []
         
