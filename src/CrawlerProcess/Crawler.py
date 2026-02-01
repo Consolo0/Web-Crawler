@@ -14,7 +14,7 @@ from src.CrawlerProcess.URLConverter import URLConverter
 class Crawler:
 
     def __init__(self, navigator, sources_metadata, error_handler,
-        page_visit_handler, price_handler, stop_criteria):
+        page_visit_handler, price_handler, stop_criteria, debug_mode=False):
 
         self.navigator = navigator
         self.sources_rules = sources_metadata
@@ -25,6 +25,11 @@ class Crawler:
         self.url_visited = set()
         self.fetcher = Fetcher()
 
+        self.debug_mode = debug_mode
+        if self.debug_mode:
+            self.debug_dir = Path("debug_html")
+            self.debug_dir.mkdir(exist_ok=True)
+            self.sources_and_types_visited = set()
         self.results = ResultIntegrator()
         
         # Initialize the listing processors (JSON extraction for each website)
@@ -44,6 +49,9 @@ class Crawler:
 
             if url in self.url_visited:
                 continue
+            if self.debug_mode and (source_id, page_type) in self.sources_and_types_visited:
+                continue
+
             source_ctx = self.sources_rules.get(source_id)
 
             if not source_ctx:
@@ -56,6 +64,11 @@ class Crawler:
             
                 if not html:
                     raise NoHTML(f"No HTML fetched for URL: {url}")
+
+                # For debugging, save the HTML
+                if self.debug_mode:
+                    self._save_debug_html(source_id, html, page_type)
+                    self.sources_and_types_visited.add((source_id, page_type))
 
             except Exception as e:
                 traceback.print_exc()
@@ -80,14 +93,13 @@ class Crawler:
                     )
 
             elif page_type == "product":
-
+                
                 data = self._process_product_page(
                     source_id,
                     html,
                 )
 
                 self.results.add_result(source_id, url, data)
-        
         return self.results
     
     def _save_debug_html(self, source_id, html, page_type):
@@ -133,17 +145,14 @@ class Crawler:
         Expects html as a string, converts to BeautifulSoup for parsing.
         """
         
+        extracted = {}
+        
         try:
             processor = self.processor_factory.get_processor(source_id)
-            extracted : dict = processor.extract_product_info(html)
+            extracted = processor.extract_product_info(html)
 
         except Exception as e:
             traceback.print_exc()
-        
-        for info_type in InfoCategories.NumberCategory.value:
-            extracted[info_type.value] = TextNormalizer.normalize(
-                extracted.get(info_type.value, "")
-            )
             
         return extracted
 
