@@ -1,5 +1,6 @@
 from collections import defaultdict
 import traceback
+from pathlib import Path
 from bs4 import BeautifulSoup
 from src.Error.NoHTML import NoHTML
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
@@ -8,6 +9,7 @@ from src.CrawlerProcess.TextNormalizer.TextNormalizer import TextNormalizer
 from src.Enums.InfoCategories import InfoCategories
 from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 from src.CrawlerProcess.ListingProcessors.ListingProcessorFactory import ListingProcessorFactory
+from src.CrawlerProcess.URLConverter import URLConverter
 
 class Crawler:
 
@@ -22,7 +24,6 @@ class Crawler:
         self.cut_evaluator = CutEvaluator(stop_criteria)
         self.url_visited = set()
         self.fetcher = Fetcher()
-
 
         self.results = ResultIntegrator()
         
@@ -65,25 +66,32 @@ class Crawler:
 
             if page_type in ("search", "category"):
 
-                self._process_listing_page(
+                product_urls = self._process_listing_page(
                     source_id,
                     html,
-                    level
                 )
+
+                for url in product_urls:
+                    self.navigator.add(
+                        source=source_id,
+                        url=url,
+                        level=level + 1,
+                        page_type="product"
+                    )
 
             elif page_type == "product":
 
                 data = self._process_product_page(
+                    source_id,
                     html,
-                    source_ctx["ExtractionRules"]
                 )
 
                 self.results.add_result(source_id, url, data)
         
         return self.results
     
-    def _save_debug_html(self, source_id, url, html, page_type):
-        """Save HTML to a formatted file for debugging"""
+    def _save_debug_html(self, source_id, html, page_type):
+        """Save HTML to a formatted file for debugging in debug_html/ folder at root"""
         try:
             filename = f"{source_id}_{page_type}.html"
             filepath = self.debug_dir / filename
@@ -97,7 +105,7 @@ class Crawler:
         except Exception as e:
             traceback.print_exc()
     
-    def _process_listing_page(self, source_id, html, level):
+    def _process_listing_page(self, source_id, html):
         """
         Process a listing page to extract product links.
         
@@ -105,66 +113,38 @@ class Crawler:
         - If the source has a custom processor (JSON extraction), use it
         - Otherwise, fall back to CSS selectors
         """
-        # Get the processor for this source
         try:
             processor = self.processor_factory.get_processor(source_id)
-            
-            # Extract product URLs
             product_urls = processor.extract_product_urls(html)
             
+            source_domain = self.sources_rules[source_id]["Source"]["Domain"]
+            converter = URLConverter(source_domain)
+            absolute_urls = converter.to_absolute(product_urls)
             
-            # Add each product URL to the crawler queue
-            for url in product_urls:
-                self.navigator.add(
-                    source=source_id,
-                    url=url,
-                    level=level + 1,
-                    page_type="product"
-                )
+            return absolute_urls
+        
         except Exception as e:
             traceback.print_exc()
+            return []
     
-    def _process_product_page(self, html, extraction_rules):
+    def _process_product_page(self, source_id, html):
         """
         Process a product page to extract product information.
         Expects html as a string, converts to BeautifulSoup for parsing.
         """
         from bs4 import BeautifulSoup
-        
-        # Convert HTML string to BeautifulSoup if needed
+
         if isinstance(html, str):
             soup = BeautifulSoup(html, "html.parser")
         else:
             soup = html
         
-        extracted = {}
+        try:
+            processor = self.processor_factory.get_processor(source_id)
+            extracted : dict = processor.extract_product_info(soup)
 
-        rules_by_entity = defaultdict(list)
-        for rule in extraction_rules:
-            rules_by_entity[rule["Type"]].append(rule)
-
-        for entity, rules in rules_by_entity.items():
-            rules.sort(key=lambda r: r.get("Priority", 1))
-
-            for rule in rules:
-                selector = rule["Selector"]
-                attr = rule["Attribute"]
-
-                nodes = soup.select(selector)
-                
-                if not nodes:
-                    continue
-
-                if attr == "text":
-                    value = nodes[0].get_text(strip=True)
-                elif attr == "existence":
-                    value = True
-                else:
-                    value = nodes[0].get(attr)
-
-                if value:
-                    extracted[entity] = value
-                    break
+        except Exception as e:
+            traceback.print_exc()
         
         for info_type in InfoCategories.NumberCategory.value:
             extracted[info_type.value] = TextNormalizer.normalize(
