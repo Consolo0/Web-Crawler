@@ -24,6 +24,19 @@ class AbstractListingProcessor(ABC):
             List of product URLs (full URLs or relative paths)
         """
         pass
+
+    @abstractmethod
+    def extract_product_info(self, html: str) -> Dict:
+        """
+        Extract product information from a product page.
+        
+        Args:
+            html: The raw HTML content of the product page
+            
+        Returns:
+            Dictionary with InfoType enum keys and extracted values
+        """
+        pass
     
     def _extract_json_from_html(self, html_text: str, pattern: str) -> Optional[Dict]:
         """
@@ -47,26 +60,3 @@ class AbstractListingProcessor(ABC):
         except (json.JSONDecodeError, AttributeError, IndexError) as e:
             traceback.print_exc()
         return None
-    
-    def _extract_links_from_css(self, html_soup, selectors: str) -> List[str]:
-        """
-        Helper: Extract links using CSS selectors (fallback method).
-        
-        Args:
-            html_soup: BeautifulSoup object
-            selectors: CSS selector string
-            
-        Returns:
-            List of href values
-        """
-        links = []
-        try:
-            elements = html_soup.select(selectors)
-            for element in elements:
-                href = element.get("href")
-                if href:
-                    links.append(href)
-        except Exception as e:
-            traceback.print_exc()
-
-        return links
