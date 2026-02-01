@@ -66,6 +66,9 @@ class MercadoLibreProcessor(AbstractListingProcessor):
         if json_ld_data and "offers" in json_ld_data:
             # Extract from JSON-LD offers
             offers = json_ld_data.get("offers", [])
+            # Handle both single object and array formats
+            if isinstance(offers, dict):
+                offers = [offers]
             if offers and len(offers) > 0:
                 price = offers[0].get("price")
                 if price:
@@ -87,6 +90,9 @@ class MercadoLibreProcessor(AbstractListingProcessor):
         stock = None
         if json_ld_data and "offers" in json_ld_data:
             offers = json_ld_data.get("offers", [])
+            # Handle both single object and array formats
+            if isinstance(offers, dict):
+                offers = [offers]
             if offers and len(offers) > 0:
                 availability = offers[0].get("availability", "")
                 stock = "InStock" in availability
