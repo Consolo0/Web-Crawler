@@ -25,7 +25,7 @@ class Controller(AbstractController):
         navigation_strategy = NavigationStrategy(restrictions.get("navigation_strategy", {}))
 
         search_session = SearchSession(self.query, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
-        result = search_session.execute(self.query, self.db)
+        result = search_session.execute(self.db)
         
         """error_handler.save_in_db(self.db, 'Error')
         page_visit_handler.save_in_db(self.db, 'PageVisit')

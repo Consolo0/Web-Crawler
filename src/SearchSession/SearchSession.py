@@ -11,7 +11,7 @@ class SearchSession(AbstractSearchSession):
     def __init__(self, query, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy):
         super().__init__(query, error_handler, page_visit_handler, price_handler, stop_criteria, navigation_strategy)
 
-    def execute(self, query: str, db: Db) -> ResultIntegrator:
+    def execute(self, db: Db) -> ResultIntegrator:
         self.start_time = datetime.now()
 
         try:
