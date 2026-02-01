@@ -51,11 +51,15 @@ class Fetcher:
                 )
             except Exception as e:
                 # If networkidle times out, try with domcontentloaded (faster)
-                page.goto(
-                    url,
-                    timeout=self.timeout_seconds * 1000,
-                    wait_until="domcontentloaded",
-                )
+                try:
+                    page.goto(
+                        url,
+                        timeout=self.timeout_seconds * 1000,
+                        wait_until="domcontentloaded",
+                    )
+                except:
+                    # If still timing out, just load what's there
+                    pass
 
             html = page.content()
 
