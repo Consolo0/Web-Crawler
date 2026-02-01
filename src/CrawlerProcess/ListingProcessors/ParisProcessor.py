@@ -7,14 +7,15 @@ class ParisProcessor(AbstractListingProcessor):
     """
     Processor for Paris.cl search listings.
     
-    Product links are in <a class="pod pod-link"> tags with href attributes.
+    Product links are in <a> tags with id starting with "product-" 
+    inside divs with data-cnstrc-item-id attribute.
     """
     
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
-        Extract product URLs from Paris (Falabella) listing pages.
+        Extract product URLs from Paris listing pages.
         
-        Looks for <a class="pod-link"> tags which contain product URLs.
+        Looks for <a id="product-*"> tags which contain product URLs.
         """
         if not html_content:
             return []
@@ -22,14 +23,12 @@ class ParisProcessor(AbstractListingProcessor):
         soup = BeautifulSoup(html_content, "html.parser")
         urls = []
         
-        # Find all product links - the main selector for Paris product cards
-        product_links = soup.select("a.pod-link")
+        # Find all product links by id pattern: id="product-..."
+        product_links = soup.select("a[id^='product-']")
         
         for link in product_links:
             href = link.get("href")
             if href:
-                # Clean up the URL (remove tracking parameters if needed, but keep the base URL)
-                # URLs come with sponsoredClickData parameter but that's fine
                 urls.append(href)
         
         return urls
