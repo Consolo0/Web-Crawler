@@ -1,8 +1,7 @@
 from typing import List, Dict, Optional
-import re
-import json
 from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
+from src.CrawlerProcess.ListingProcessors.DataExtractor import DataExtractor
 from src.Enums.InfoType import InfoType
 
 
@@ -50,7 +49,7 @@ class ParisProcessor(AbstractListingProcessor):
         product_info = {}
         
         # Try to extract from JSON-LD structured data first
-        json_ld_data = self._extract_json_ld(soup)
+        json_ld_data = DataExtractor.extract_json_ld(soup)
         
         # Extract Title
         title = None
@@ -81,7 +80,7 @@ class ParisProcessor(AbstractListingProcessor):
             price_tag = soup.select_one("[data-test='price'], .price, [class*='price']")
             if price_tag:
                 price_text = price_tag.get_text(strip=True)
-                price = self._extract_price_value(price_text)
+                price = DataExtractor.extract_price_value(price_text)
         
         product_info[InfoType.Price] = price
         
@@ -130,78 +129,15 @@ class ParisProcessor(AbstractListingProcessor):
             rating_tag = soup.select_one("[data-test='rating'], .rating, [class*='rating']")
             if rating_tag:
                 rating_text = rating_tag.get_text(strip=True)
-                rating = self._extract_rating_value(rating_text)
+                rating = DataExtractor.extract_rating_value(rating_text)
                 rating_data["rating"] = rating
             
             votes_tag = soup.select_one("[data-test='reviews'], .reviews, [class*='reviews']")
             if votes_tag:
                 votes_text = votes_tag.get_text(strip=True)
-                votes = self._extract_votes_value(votes_text)
+                votes = DataExtractor.extract_votes_value(votes_text)
                 rating_data["votes"] = votes
         
         product_info[InfoType.Rating] = rating_data if (rating_data["rating"] is not None or rating_data["votes"] is not None) else None
         
         return product_info
-
-    @staticmethod
-    def _extract_json_ld(soup: BeautifulSoup) -> Optional[Dict]:
-        """Extract JSON-LD structured data from script tags."""
-        try:
-            script_tags = soup.find_all("script", type="application/ld+json")
-            for script in script_tags:
-                if script.string:
-                    try:
-                        data = json.loads(script.string)
-                        if isinstance(data, dict) and "name" in data:
-                            return data
-                    except json.JSONDecodeError:
-                        continue
-        except Exception:
-            pass
-        return None
-
-    @staticmethod
-    def _extract_price_value(text: str) -> Optional[float]:
-        """Extract numeric price from text."""
-        if not text:
-            return None
-        try:
-            # Remove common currency symbols and spaces
-            clean = re.sub(r'[^\d.,]', '', text).strip()
-            if clean:
-                # Replace comma with dot for decimal
-                clean = clean.replace(',', '.')
-                return float(clean)
-        except (ValueError, AttributeError):
-            pass
-        return None
-
-    @staticmethod
-    def _extract_rating_value(text: str) -> Optional[float]:
-        """Extract rating value from text."""
-        if not text:
-            return None
-        try:
-            # Extract first number that looks like a rating (0-5)
-            match = re.search(r'(\d+\.?\d*)', text)
-            if match:
-                rating = float(match.group(1))
-                if 0 <= rating <= 5:
-                    return rating
-        except (ValueError, AttributeError):
-            pass
-        return None
-
-    @staticmethod
-    def _extract_votes_value(text: str) -> Optional[int]:
-        """Extract number of votes from text."""
-        if not text:
-            return None
-        try:
-            # Extract the number
-            match = re.search(r'(\d+)', text)
-            if match:
-                return int(match.group(1))
-        except (ValueError, AttributeError):
-            pass
-        return None
