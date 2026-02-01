@@ -3,8 +3,6 @@ from src.Error.NoRelatedProcessor import NoRelatedProcessor
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 from src.CrawlerProcess.ListingProcessors.MercadoLibreProcessor import MercadoLibreProcessor
 from src.CrawlerProcess.ListingProcessors.FalabellaProcessor import FalabellaProcessor
-from src.CrawlerProcess.ListingProcessors.LiderProcessor import LiderProcessor
-from src.CrawlerProcess.ListingProcessors.RipleyProcessor import RipleyProcessor
 from src.CrawlerProcess.ListingProcessors.ParisProcessor import ParisProcessor
 
 
@@ -53,6 +51,4 @@ class ListingProcessorFactory:
         """
         cls.register_processor("MERCADOLIBRE", MercadoLibreProcessor())
         cls.register_processor("FALABELLA", FalabellaProcessor())
-        cls.register_processor("LIDER", LiderProcessor())
-        cls.register_processor("RIPLEY", RipleyProcessor())
         cls.register_processor("PARIS", ParisProcessor())
