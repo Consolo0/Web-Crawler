@@ -132,16 +132,10 @@ class Crawler:
         Process a product page to extract product information.
         Expects html as a string, converts to BeautifulSoup for parsing.
         """
-        from bs4 import BeautifulSoup
-
-        if isinstance(html, str):
-            soup = BeautifulSoup(html, "html.parser")
-        else:
-            soup = html
         
         try:
             processor = self.processor_factory.get_processor(source_id)
-            extracted : dict = processor.extract_product_info(soup)
+            extracted : dict = processor.extract_product_info(html)
 
         except Exception as e:
             traceback.print_exc()
