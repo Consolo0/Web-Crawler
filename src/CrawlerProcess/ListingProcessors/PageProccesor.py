@@ -12,8 +12,8 @@ class PageProcessor(AbstractListingProcessor):
     Product links are in <a> tags with id starting with "product-" 
     inside divs with data-cnstrc-item-id attribute.
     """
-    def __init__(self, navigation_strategy, extraction_rules, nav_rules) -> None:
-        super().__init__(navigation_strategy, extraction_rules, nav_rules)
+    def __init__(self, navigation_strategy, sources_rules) -> None:
+        super().__init__(navigation_strategy, sources_rules)
         
     def extract_product_urls(self, source_id: str, html_content: str) -> List[str]:
         """
@@ -77,11 +77,10 @@ class PageProcessor(AbstractListingProcessor):
         product_price_rules = extraction_rules.get("Price", {})
 
         for priority in sorted(product_price_rules.keys(), key=lambda x: int(x)):
-            
+
             if not InfoType.Price.value in product_info:
                 price = self.extract_product_price(soup, json_ld_data, priority, extraction_rules)
                 product_info[InfoType.Price.value] = price
-
                 if price:
                     break
         
@@ -167,6 +166,7 @@ class PageProcessor(AbstractListingProcessor):
         elif attribute == "text":
 
             price_tag = soup.select_one(selector)
+
             if price_tag:
                 price_text = price_tag.get_text(strip=True)
                 price = DataExtractor.extract_price_value(price_text)
