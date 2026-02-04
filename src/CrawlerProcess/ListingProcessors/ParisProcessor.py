@@ -12,8 +12,8 @@ class ParisProcessor(AbstractListingProcessor):
     Product links are in <a> tags with id starting with "product-" 
     inside divs with data-cnstrc-item-id attribute.
     """
-    def __init__(self, navigation_strategy) -> None:
-        super().__init__(navigation_strategy)
+    def __init__(self, navigation_strategy, extraction_rules, nav_rules) -> None:
+        super().__init__(navigation_strategy, extraction_rules, nav_rules)
         
     def extract_product_urls(self, html_content: str) -> List[str]:
         """

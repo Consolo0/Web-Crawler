@@ -44,11 +44,11 @@ class ListingProcessorFactory:
         raise NoRelatedProcessor(f"No processor for source: {source_id}")
 
     @classmethod
-    def initialize_default_processors(cls, navigation_strategy) -> None:
+    def initialize_default_processors(cls, navigation_strategy, extraction_rules, nav_rules) -> None:
         """
         Initialize default processors for known sources.
         Call this once when your app starts.
         """
-        cls.register_processor("MERCADOLIBRE", MercadoLibreProcessor(navigation_strategy))
-        cls.register_processor("FALABELLA", FalabellaProcessor(navigation_strategy))
-        cls.register_processor("PARIS", ParisProcessor(navigation_strategy))
+        cls.register_processor("MERCADOLIBRE", MercadoLibreProcessor(navigation_strategy, extraction_rules, nav_rules))
+        cls.register_processor("FALABELLA", FalabellaProcessor(navigation_strategy, extraction_rules, nav_rules))
+        cls.register_processor("PARIS", ParisProcessor(navigation_strategy, extraction_rules, nav_rules))

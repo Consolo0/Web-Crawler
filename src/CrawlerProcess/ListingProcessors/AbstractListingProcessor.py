@@ -12,8 +12,10 @@ class AbstractListingProcessor(ABC):
     so we create a specific processor for each one.
     """
 
-    def __init__(self, navigation_strategy):
+    def __init__(self, navigation_strategy, extraction_rules, nav_rules):
         self.navigation_strategy = navigation_strategy
+        self.extraction_rules = extraction_rules
+        self.nav_rules = nav_rules
         self.products_counter = 0
 
     @abstractmethod

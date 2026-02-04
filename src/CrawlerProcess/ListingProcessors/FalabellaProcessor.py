@@ -11,8 +11,8 @@ class FalabellaProcessor(AbstractListingProcessor):
     
     Product links are in <a class="pod-link"> tags with href attributes.
     """
-    def __init__(self, navigation_strategy) -> None:
-        super().__init__(navigation_strategy)
+    def __init__(self, navigation_strategy, extraction_rules, nav_rules) -> None:
+        super().__init__(navigation_strategy, extraction_rules, nav_rules)
 
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
