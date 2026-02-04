@@ -51,7 +51,6 @@ class Crawler:
         Each thread fetches and processes URLs independently.
         """
 
-        print(f"Navigator: {self.navigator}")
         with ThreadPoolExecutor(max_workers=self.num_threads) as executor:
             futures = set()
             
@@ -61,7 +60,6 @@ class Crawler:
                     if not self.cut_evaluator.should_continue(
                         self.error_handler.get_length()
                     ):
-                        print("Cut criteria met, stopping crawl.")
                         break
 
                 got_item = False
@@ -75,13 +73,11 @@ class Crawler:
 
                     with self.url_visited_lock:
                         if url in self.url_visited:
-                            print(f"URL already visited, skipping: {url}")
                             continue
                     
                     if self.debug_mode:
                         with self.visited_types_lock:
                             if (source_id, page_type) in self.sources_and_types_visited:
-                                print(f"Debug mode: already visited source/type, skipping debug save: {source_id} | {page_type}")
                                 continue
                     
                     future = executor.submit(
@@ -91,7 +87,6 @@ class Crawler:
                     futures.add(future)
                 
                 if not got_item and futures:
-                    print(f"Navigator empty, waiting for {len(futures)} futures to complete...")
                     try:
                         for future in as_completed(futures, timeout=30):
                             try:
@@ -106,11 +101,9 @@ class Crawler:
                     continue
 
                 if not got_item and not futures:
-                    print("Navigator is empty and no futures pending, stopping crawl.")
                     break
                 
                 if len(futures) >= self.num_threads * 2:
-                    print(f"Too many futures ({len(futures)}), waiting for at least one to complete...")
                     try:
                         for future in as_completed(futures, timeout=30):
                             try:
@@ -123,7 +116,6 @@ class Crawler:
                     except TimeoutError:
                         pass
             
-            print(f"Main loop done, waiting for {len(futures)} remaining futures...")
             for future in as_completed(futures):
                 try:
                     future.result()
@@ -148,8 +140,6 @@ class Crawler:
             # Fetch HTML (thread-safe, each thread has its own session)
             html = self.fetcher.fetch(url, source_ctx["Source"]["RequireJS"])
             
-            print(f"[Thread {threading.current_thread().name}] URL: {url} | HTML length: {len(html)}")
-            
             if not html:
                 raise NoHTML(f"No HTML fetched for URL: {url}")
             
@@ -170,11 +160,10 @@ class Crawler:
         
         # Process based on page type
         if page_type in ("search", "category"):
-            self._process_listing_page_safe_and_save(source_id, html, url, level)
+            self._process_listing_page_safe_and_save(source_id, html, level)
         
         elif page_type == "product":
             self._process_product_page_safe_and_save(source_id, html, url)
-    
     
     def _save_debug_html_safe(self, source_id, html, page_type):
         """Thread-safe version of _save_debug_html with lock"""
@@ -184,10 +173,10 @@ class Crawler:
                 self._save_debug_html(source_id, html, page_type)
             self.sources_and_types_visited.add((source_id, page_type))
     
-    def _process_listing_page_safe_and_save(self, source_id, html, url, level):
+    def _process_listing_page_safe_and_save(self, source_id, html, level):
         """Thread-safe wrapper for listing page processing and saving"""
         product_urls = self._process_listing_page(source_id, html)
-        
+
         # Add product URLs to navigator (with lock)
         with self.navigator_lock:
             for product_url in product_urls:
