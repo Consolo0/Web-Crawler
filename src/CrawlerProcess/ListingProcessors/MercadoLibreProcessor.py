@@ -29,7 +29,7 @@ class MercadoLibreProcessor(AbstractListingProcessor):
         soup = BeautifulSoup(html_content, "html.parser")
         
         remaining_slots = self.navigation_strategy.maximun_products_per_source - self.products_counter
-        product_links = soup.select(f"a[id^='product-']", limit=remaining_slots)
+        product_links = soup.select(f"a.poly-component__title", limit=remaining_slots)
         self.products_counter += len(product_links)
         
         urls = []

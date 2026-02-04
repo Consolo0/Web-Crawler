@@ -27,7 +27,7 @@ class FalabellaProcessor(AbstractListingProcessor):
         urls = []
         
         remaining_slots = self.navigation_strategy.maximun_products_per_source - self.products_counter
-        product_links = soup.select(f"a[id^='product-']", limit=remaining_slots)
+        product_links = soup.select(f"a.pod-link", limit=remaining_slots)
         self.products_counter += len(product_links)
         
         for link in product_links:
