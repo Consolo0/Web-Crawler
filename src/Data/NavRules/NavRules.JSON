@@ -28,7 +28,7 @@
             "Selectors": "a.ui-search-item__group__element",
             "PaginationType": "page",
             "StartPage": 1,
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "MERCADOLIBRE",
@@ -64,7 +64,7 @@
             },
             "Selectors": "a[data-testid='product-link']",
             "PaginationType": "page",
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "FALABELLA",
@@ -110,7 +110,7 @@
             },
             "Selectors": "a[href$='.html']",
             "PaginationType": "page",
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "PARIS",
@@ -119,7 +119,7 @@
             "Selectors": "a[href$='.html']",
             "PaginationType": "page",
             "StartPage": 1,
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "PARIS",
@@ -166,7 +166,7 @@
             "Selectors": "a[href*='/product/']",
             "PaginationType": "page",
             "StartPage": 1,
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "RIPLEY",
@@ -176,7 +176,7 @@
             "Selectors": "a[href$='p']:not([href*='cart']):not([href*='login'])",
             "PaginationType": "page",
             "StartPage": 1,
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "RIPLEY",
@@ -213,7 +213,7 @@
             "Selectors": "a[href*='/p/']",
             "PaginationType": "page",
             "StartPage": 1,
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "LIDER",
@@ -223,7 +223,7 @@
             "Selectors": "a[href*='/p/']",
             "PaginationType": "page",
             "StartPage": 1,
-            "MaxPages": 5
+            "MaxPages": 2
         },
         {
             "AssociatedSource": "LIDER",
