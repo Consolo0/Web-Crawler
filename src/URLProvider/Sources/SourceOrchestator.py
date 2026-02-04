@@ -15,18 +15,9 @@ class SourceOrchestator:
                 continue
             source = MappingProxyType(source)
             
-            nav_rules = [MappingProxyType(rule)
-                for rule in
-                self.db.find_by_field("NavRules", "AssociatedSource", source["ID"])
-                ]
-            extraction_rules = [MappingProxyType(rule)
-                for rule in
-                self.db.find_by_field("ExtractionRules", "AssociatedSource", source["ID"])
-                ]
-            validation_rules = [MappingProxyType(rule)
-                for rule in
-                self.db.find_by_field("ValidationRules", "AssociatedSource", source["ID"])
-                ]
+            nav_rules = MappingProxyType(self.db.find_by_field("NavRules", "AssociatedSource", source["ID"])[0])
+            extraction_rules = MappingProxyType(self.db.find_by_field("ExtractionRules", "AssociatedSource", source["ID"])[0])
+            validation_rules = MappingProxyType(self.db.find_by_field("ValidationRules", "AssociatedSource", source["ID"])[0])
 
             source_context[source["ID"]] = {
                 "Source": source,

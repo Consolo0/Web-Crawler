@@ -17,24 +17,32 @@ class URLGenerator:
         navigator = NavigatorOrchestrator.get_navigator(self.navigation_strategy.type)
         sources = self.sources_metadata.keys()
 
+        print("Sources to generate URLs for:", sources)
+
         for source in sources:
+            rule_entry = self.sources_metadata[source]["NavRules"]
+            print("Processing source:", source, "with rules:", rule_entry)
             try:
-                for nav_rule in self.sources_metadata[source]["NavRules"]:
-
-                    query_param_mapping = nav_rule.get("QueryParamMapping", {})
-
-                    if nav_rule["NavType"].lower().strip() == URLType.SEARCH.value:
-
-                        if nav_rule["PaginationType"].lower() == "page":
-                            for i in range(1, nav_rule["MaxPages"] + 1):
-
-                                url = self.generate_search_url(
-                                    nav_rule, query_param_mapping, page=i
-                                )
-                                navigator.add(source, url, 0, URLType.SEARCH.value)
-
-                        else:
-                            continue  # Otros tipos de paginación pueden ser manejados aquí
+                source = rule_entry.get("AssociatedSource")
+                print("Generating URLs for source:", source)
+                
+                # Process search navigation rules
+                search_rule = rule_entry.get("search")
+                print("Search rule for source:", source, "is:", search_rule)
+                if search_rule:
+                    query_param_mapping = search_rule.get("QueryParamMapping", {})
+                    print("Query parameter mapping for source:", source, "is:", query_param_mapping)
+                    
+                    if search_rule.get("PaginationType", "").lower() == "page":
+                        max_pages = search_rule.get("MaxPages", 1)
+                        for page_num in range(1, max_pages + 1):
+                            url = self.generate_search_url(
+                                search_rule, query_param_mapping, page=page_num
+                            )
+                            navigator.add(source, url, 0, URLType.SEARCH.value)
+                    else:
+                        # Handle other pagination types if needed
+                        continue
 
             except Exception as e:
                 import traceback
@@ -45,6 +53,7 @@ class URLGenerator:
 
     def generate_search_url(self, nav_rule, query_param_mapping, page=None) -> str:
         initial_url = nav_rule["UrlTemplate"]
+        print("Initial URL template:", initial_url)
 
         search_config = query_param_mapping.get("search", {})
         search_location = search_config.get("location")
@@ -80,5 +89,7 @@ class URLGenerator:
             params_for_builder,
             page
         )
+
+        print("Generated search URL:", search_url_built)
 
         return search_url_built

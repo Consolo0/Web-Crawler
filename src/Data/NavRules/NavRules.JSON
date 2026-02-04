@@ -2,234 +2,207 @@
     "NavRules": [
         {
             "AssociatedSource": "MERCADOLIBRE",
-            "NavType": "search",
-            "SubDomain": "listado",
-            "UrlTemplate": "https://listado.mercadolibre.cl",
-            "QueryParamMapping": {
-                "search": {
-                    "location": "path",
-                    "transform": "slug",
-                    "order": 0
-                },
-                "other_params": {
-                    "page": {
+            "search": {
+                "SubDomain": "listado",
+                "UrlTemplate": "https://listado.mercadolibre.cl",
+                "QueryParamMapping": {
+                    "search": {
                         "location": "path",
-                        "param": {
-                            "key": "Desde",
-                            "type": "offset",
-                            "defaultValue": 48
-                        },
-                        "format": "{key}_{value}_NoIndex_True",
-                        "order": 1,
-                        "beforeKeyUnion": "_"
-                    }
-                }
-            },
-            "Selectors": "a.ui-search-item__group__element",
-            "PaginationType": "page",
-            "StartPage": 1,
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "MERCADOLIBRE",
-            "NavType": "product",
-            "SubDomain": "www",
-            "Selectors": "a.ui-search-link"
-        },
-        {
-            "AssociatedSource": "FALABELLA",
-            "NavType": "search",
-            "SubDomain": "www",
-            "UrlTemplate": "https://www.falabella.com/falabella-cl/search",
-            "QueryParamMapping": {
-                "search": {
-                    "location": "query",
-                    "transform": "urlencode",
-                    "param": "Ntt",
-                    "order": 0
-                },
-                "other_params": {
-                    "page":  {
-                        "location": "query",
-                        "param": {
-                            "key": "page",
-                            "type": "page",
-                            "defaultValue": 1
-                        },
-                        "format": "{key}={value}",
-                        "order": 1,
-                        "beforeKeyUnion": "&"
-                    }
-                }
-            },
-            "Selectors": "a[data-testid='product-link']",
-            "PaginationType": "page",
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "FALABELLA",
-            "NavType": "category",
-            "Context": "listing_page",
-            "SubDomain": "www",
-            "UrlPattern": "^/falabella-cl/category/",
-            "Selectors": "a[data-testid='product-link']"
-        },
-        {
-            "AssociatedSource": "FALABELLA",
-            "NavType": "product",
-            "Context": "product_page",
-            "SubDomain": "www",
-            "UrlPattern": "^/falabella-cl/product/[0-9]+/",
-            "Selectors": null
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "NavType": "search",
-            "SubDomain": "www",
-            "UrlTemplate": "https://www.paris.cl/search",
-            "QueryParamMapping": {
-                "search": {
-                    "location": "query",
-                    "transform": "urlencode",
-                    "param": "q",
-                    "order": 0
-                },
-                "other_params": {
-                    "page": {
-                        "location": "query",
-                        "param": {
-                            "key": "page",
-                            "type": "page",
-                            "defaultValue": 1
-                        },
-                        "format": "{key}={value}",
-                        "order": 1,
-                        "beforeKeyUnion": "&"
-                    }
-                }
-            },
-            "Selectors": "a[href$='.html']",
-            "PaginationType": "page",
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "NavType": "category",
-            "SubDomain": "www",
-            "Selectors": "a[href$='.html']",
-            "PaginationType": "page",
-            "StartPage": 1,
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "NavType": "product",
-            "SubDomain": "www",
-            "Selectors": null
-        },
-        {
-            "AssociatedSource": "RIPLEY",
-            "NavType": "search",
-            "SubDomain": "simple",
-            "UrlTemplate": "https://simple.ripley.cl/search",
-            "QueryParamMapping": {
-                "search": {
-                    "location": "path",
-                    "transform": "percentencode",
-                    "order": 0
-                },
-                "other_params": {
-                    "sort": {
-                        "location": "query",
-                        "param": {
-                            "key": "sort",
-                            "type": "sort",
-                            "defaultValue": "relevance_desc"
-                        },
-                        "format": "{key}={value}",
-                        "order": 1,
-                        "beforeKeyUnion": "&"
+                        "transform": "slug",
+                        "order": 0
                     },
-                    "page": {
-                        "location": "query",
-                        "param": {
-                            "key": "page",
-                            "type": "page",
-                            "defaultValue": 1
-                        },
-                        "format": "{key}={value}",
-                        "order": 2,
-                        "beforeKeyUnion": "&"
+                    "other_params": {
+                        "page": {
+                            "location": "path",
+                            "param": {
+                                "key": "Desde",
+                                "type": "offset",
+                                "defaultValue": 48
+                            },
+                            "format": "{key}_{value}_NoIndex_True",
+                            "order": 1,
+                            "beforeKeyUnion": "_"
+                        }
                     }
-                }
-            },
-            "Selectors": "a[href*='/product/']",
-            "PaginationType": "page",
-            "StartPage": 1,
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "RIPLEY",
-            "NavType": "category",
-            "SubDomain": "simple",
-            "UrlTemplate": "https://simple.ripley.cl/{category}",
-            "Selectors": "a[href$='p']:not([href*='cart']):not([href*='login'])",
-            "PaginationType": "page",
-            "StartPage": 1,
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "RIPLEY",
-            "NavType": "product",
-            "SubDomain": "simple",
-            "Selectors": "section.product-header h1"
-        },
-        {
-            "AssociatedSource": "LIDER",
-            "NavType": "search",
-            "SubDomain": "super",
-            "UrlTemplate": "https://super.lider.cl/search",
-            "QueryParamMapping": {
-                "search": {
-                    "location": "query",
-                    "transform": "urlencode",
-                    "param": "q",
-                    "order": 0
                 },
-                "other_params": {
-                    "page": {
+                "Selectors": "a.poly-component__title",
+                "Link": "href",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2
+            }
+        },
+        {
+            "AssociatedSource": "FALABELLA",
+            "search": {
+                "SubDomain": "www",
+                "UrlTemplate": "https://www.falabella.com/falabella-cl/search",
+                "QueryParamMapping": {
+                    "search": {
                         "location": "query",
-                        "param": {
-                            "key": "page",
-                            "type": "page",
-                            "defaultValue": 1
-                        },
-                        "format": "{key}={value}",
-                        "order": 1,
-                        "beforeKeyUnion": "&"
+                        "transform": "urlencode",
+                        "param": "Ntt",
+                        "order": 0
+                    },
+                    "other_params": {
+                        "page":  {
+                            "location": "query",
+                            "param": {
+                                "key": "page",
+                                "type": "page",
+                                "defaultValue": 1
+                            },
+                            "format": "{key}={value}",
+                            "order": 1,
+                            "beforeKeyUnion": "&"
+                        }
                     }
-                }
+                },
+                "Selectors": "a.pod-link",
+                "Link": "href",
+                "PaginationType": "page",
+                "MaxPages": 2
             },
-            "Selectors": "a[href*='/p/']",
-            "PaginationType": "page",
-            "StartPage": 1,
-            "MaxPages": 2
+            "category": {
+                "SubDomain": "www",
+                "Selectors": "a[data-testid='product-link']",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2,
+                "UrlTemplate": null
+            }
+        },
+        {
+            "AssociatedSource": "PARIS",
+            "search":{
+                "SubDomain": "www",
+                "UrlTemplate": "https://www.paris.cl/search",
+                "QueryParamMapping": {
+                    "search": {
+                        "location": "query",
+                        "transform": "urlencode",
+                        "param": "q",
+                        "order": 0
+                    },
+                    "other_params": {
+                        "page": {
+                            "location": "query",
+                            "param": {
+                                "key": "page",
+                                "type": "page",
+                                "defaultValue": 1
+                            },
+                            "format": "{key}={value}",
+                            "order": 1,
+                            "beforeKeyUnion": "&"
+                        }
+                    }
+                },
+                "Selectors": "a[id^='product-']",
+                "Link": "href",
+                "PaginationType": "page",
+                "MaxPages": 2
+            },
+            "category": {
+                "SubDomain": "www",
+                "Selectors": "a[href$='.html']",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2,
+                "UrlTemplate": null
+            }
+        },
+        {
+            "AssociatedSource": "RIPLEY",
+            "search": {
+                "SubDomain": "simple",
+                "UrlTemplate": "https://simple.ripley.cl/search",
+                "QueryParamMapping": {
+                    "search": {
+                        "location": "path",
+                        "transform": "percentencode",
+                        "order": 0
+                    },
+                    "other_params": {
+                        "sort": {
+                            "location": "query",
+                            "param": {
+                                "key": "sort",
+                                "type": "sort",
+                                "defaultValue": "relevance_desc"
+                            },
+                            "format": "{key}={value}",
+                            "order": 1,
+                            "beforeKeyUnion": "&"
+                        },
+                        "page": {
+                            "location": "query",
+                            "param": {
+                                "key": "page",
+                                "type": "page",
+                                "defaultValue": 1
+                            },
+                            "format": "{key}={value}",
+                            "order": 2,
+                            "beforeKeyUnion": "&"
+                        }
+                    }
+                },
+                "Selectors": "a[href*='/product/']",
+                "Link": "href",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2
+            },
+            "category": {
+                "SubDomain": "simple",
+                "Selectors": "a[href$='p']:not([href*='cart']):not([href*='login'])",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2,
+                "UrlTemplate": null
+            }
         },
         {
             "AssociatedSource": "LIDER",
-            "NavType": "category",
-            "SubDomain": "super",
-            "UrlTemplate": "https://super.lider.cl/browse/{category}",
-            "Selectors": "a[href*='/p/']",
-            "PaginationType": "page",
-            "StartPage": 1,
-            "MaxPages": 2
-        },
-        {
-            "AssociatedSource": "LIDER",
-            "NavType": "product",
-            "SubDomain": "super",
-            "Selectors": "h1"
+            "search": {
+                "SubDomain": "super",
+                "UrlTemplate": "https://super.lider.cl/search",
+                "QueryParamMapping": {
+                    "search": {
+                        "location": "query",
+                        "transform": "urlencode",
+                        "param": "q",
+                        "order": 0
+                    },
+                    "other_params": {
+                        "page": {
+                            "location": "query",
+                            "param": {
+                                "key": "page",
+                                "type": "page",
+                                "defaultValue": 1
+                            },
+                            "format": "{key}={value}",
+                            "order": 1,
+                            "beforeKeyUnion": "&"
+                        }
+                    }
+                },
+                "Selectors": "a[href*='/p/']",
+                "Link": "href",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2
+            },
+            "category": {
+                "SubDomain": "super",
+                "Selectors": "a[href*='/p/']",
+                "PaginationType": "page",
+                "StartPage": 1,
+                "MaxPages": 2,
+                "UrlTemplate": null
+            }
         }
     ]
 }

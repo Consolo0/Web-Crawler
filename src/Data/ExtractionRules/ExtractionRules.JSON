@@ -2,143 +2,216 @@
     "ExtractionRules": [
         {
             "AssociatedSource": "MERCADOLIBRE",
-            "Type":"ProductTitle",
-            "Priority": 1,
-            "Selector": "h1.ui-pdp-title",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "MERCADOLIBRE",
-            "Type":"Price",
-            "Priority":1,
-            "Selector": "span.andes-money-amount__fraction",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "MERCADOLIBRE",
-            "Type":"Stock",
-            "Priority":1,
-            "Selector": "span.ui-pdp-action-row__subtitle",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "MERCADOLIBRE",
-            "Type":"Rating",
-            "Priority":1,
-            "Selector": "span.ui-review-capability__rating__average",
-            "Attribute": "text"
+            "ProductTitle": { 
+                "1": {
+                    "Selector": "name",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "h1, .ui-pdp-title",
+                    "Attribute": "text"
+                }
+            },
+            "Price": {
+                "1": {
+                    "Selector": "offers",
+                    "SubSelector": "price",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": ".ui-pdp-price__second-line, [data-test='price']",
+                    "Attribute": "text"
+                }
+            },
+            "Stock": {
+                "1": {
+                    "Selector": "offers",
+                    "SubSelector": "availability",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "[class*='availability'], .stock",
+                    "Attribute": "text"
+                }
+            },
+            "Rating": {
+                "1": {
+                    "Selector": "aggregateRating",
+                    "SubSelector": "ratingValue",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": ".ui-pdp-review__rating, [data-test='rating']",
+                    "Attribute": "text"
+                }
+            },
+            "Votes": {
+                "1": {
+                    "Selector": "aggregateRating",
+                    "SubSelector": "ratingCount",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": ".ui-pdp-review__amount, [data-test='reviews']",
+                    "Attribute": "text"
+                }
+            }
         },
         {
             "AssociatedSource": "FALABELLA",
-            "Type":"ProductTitle",
-            "Priority": 1,
-            "Selector": "h1.fa--product-name",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "FALABELLA",
-            "Type":"Price",
-            "Priority": 1,
-            "Selector": "div[class*='price'] span",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "FALABELLA",
-            "Type":"Stock",
-            "Priority":1,
-            "Selector": "div.add-quantity-container p",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "FALABELLA",
-            "Type":"Rating",
-            "Priority":1,
-            "Selector": "div[class^='_bv-summary-rating'] span",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "Type":"ProductTitle",
-            "Priority": 1,
-            "Selector": "h1[class*='ui-text-h1']",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "Type":"Price",
-            "Priority":1,
-            "Selector": "h2[class*='ui-text-subtitle']",
-            "Attribute": "text"
+            "ProductTitle": {
+                "1": {
+                    "Selector": "h1",
+                    "Attribute": "text"
+                }
+            },
+            "Price": {
+                "1": {
+                    "Selector": "[data-test='price'], .price, .product-price, [class*='price']",
+                    "Attribute": "text"
+                }
+            },
+            "Stock": {
+                "1": {
+                    "Selector": "[data-test='availability'], .availability, [class*='stock']",
+                    "Attribute": "text"
+                }
+            },
+            "Rating": {
+                "1": {
+                    "Selector": "[data-test='rating'], .rating, [class*='rating']",
+                    "Attribute": "text"
+                }
+            },
+            "Votes": {
+                "1": {
+                    "Selector": "[data-test='reviews'], .reviews, [class*='reviews']",
+                    "Attribute": "text"
+                }
+            }
         },
         {
             "AssociatedSource": "PARIS",
-            "Type":"Price",
-            "Priority":2,
-            "Selector": "span[class*='ui-text-body']",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "Type":"Stock",
-            "Priority":1,
-            "Selector": "div[class*='stock'] p",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "PARIS",
-            "Type":"Rating",
-            "Priority":1,
-            "Selector": "button[data-testid='star-rating-rating-value']",
-            "Attribute": "text"
+            "ProductTitle": {
+                "1": {
+                    "Selector": "name",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "h1, [data-test='product-title']",
+                    "Attribute": "text"
+                }
+            },
+            "Price": {
+                "1": {
+                    "Selector": "offers",
+                    "SubSelector": "price",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "[data-test='price'], .price, [class*='price']",
+                    "Attribute": "text"
+                }
+            },
+            "Stock": {
+                "1": {
+                    "Selector": "offers",
+                    "SubSelector": "availability",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "[class*='availability'], [data-test='availability']",
+                    "Attribute": "text"
+                }
+            },
+            "Rating": {
+                "1" : {
+                    "Selector": "aggregateRating",
+                    "SubSelector": "ratingValue",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "[data-test='rating'], .rating, [class*='rating']",
+                    "Attribute": "text"
+                }
+            },
+            "Votes": {
+                "1": {
+                    "Selector": "aggregateRating",
+                    "SubSelector": "ratingCount",
+                    "Attribute": "json"
+                },
+                "2": {
+                    "Selector": "[data-test='reviews'], .reviews, [class*='reviews']",
+                    "Attribute": "text"
+                }
+            }
         },
         {
             "AssociatedSource": "RIPLEY",
-            "Type":"ProductTitle",
-            "Priority": 1,
-            "Selector": "section.product-header h1",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "RIPLEY",
-            "Type":"Price",
-            "Priority":1,
-            "Selector": "dt.product-price",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "RIPLEY",
-            "Type":"Rating",
-            "Priority":1,
-            "Selector": "span.pr-reco-value",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "LIDER",
-            "Type":"ProductTitle",
-            "Priority": 1,
-            "Selector": "h1#main-title[itemprop='name']",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "LIDER",
-            "Type":"Price",
-            "Priority":1,
-            "Selector": "span[itemprop='price'][data-fs-element='price']",
-            "Attribute": "text"
-        },
-        {
-            "AssociatedSource": "LIDER",
-            "Type":"Rating",
-            "Priority":1,
-            "Selector": "span.rating-number",
-            "Attribute": "text"
+            "ProductTitle": {
+                "1": {
+                    "Selector": "section.product-header h1",
+                    "Attribute": "text"
+                }
+            },
+            "Price": {
+                "1": {
+                    "Selector": "dt.product-price",
+                    "Attribute": "text"
+                }
+            },
+            "Stock": {
+                "1": {
+                    "Selector": "div.stock-info span.available-stock",
+                    "Attribute": "text"
+                }
+            },
+            "Rating": {
+                "1": {
+                    "Selector": "span.pr-reco-value",
+                    "Attribute": "text"
+                }
+            },
+            "Votes": {
+                "1": {
+                    "Selector": "span.pr-reco-count",
+                    "Attribute": "text"
+                }
+            }
         },
         {
             "AssociatedSource": "LIDER",
-            "Type":"Stock",
-            "Priority":1,
-            "Selector": "button[data-fs-element='add-to-cart'], button:contains('Agregar')",
-            "Attribute": "existence"
+            "ProductTitle": {
+                "1": {
+                    "Selector": "h1#main-title[itemprop='name']",
+                    "Attribute": "text"
+                }
+            },
+            "Price": {
+                "1": {
+                    "Selector": "span[itemprop='price'][data-fs-element='price']",
+                    "Attribute": "text"
+                }
+            },
+            "Stock": {
+                "1": {
+                    "Selector": "button[data-fs-element='add-to-cart'], button:contains('Agregar')",
+                    "Attribute": "existence"
+                }
+            },
+            "Rating": {
+                "1": {
+                    "Selector": "span.rating-number",
+                    "Attribute": "text"
+                }
+            },
+            "Votes": {
+                "1": {
+                    "Selector": "span.total-reviews",
+                    "Attribute": "text"
+                }
+            }
         }
     ]
 }

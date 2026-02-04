@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from typing import List, Dict, Optional
 import json
 import re
@@ -12,14 +13,13 @@ class AbstractListingProcessor(ABC):
     so we create a specific processor for each one.
     """
 
-    def __init__(self, navigation_strategy, extraction_rules, nav_rules):
+    def __init__(self, navigation_strategy, sources_rules):
         self.navigation_strategy = navigation_strategy
-        self.extraction_rules = extraction_rules
-        self.nav_rules = nav_rules
-        self.products_counter = 0
+        self.sources_rules = sources_rules
+        self.products_counter_per_source = defaultdict(lambda : 0)
 
     @abstractmethod
-    def extract_product_urls(self, html_content: str) -> List[str]:
+    def extract_product_urls(self, source_id: str, html_content: str) -> List[str]:
         """
         Extract product URLs from the page.
         

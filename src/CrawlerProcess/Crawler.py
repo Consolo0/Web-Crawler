@@ -7,7 +7,7 @@ from src.Error.NoHTML import NoHTML
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
 from src.CrawlerProcess.Fetch.Fetcher import Fetcher
 from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
-from src.CrawlerProcess.ListingProcessors.ListingProcessorFactory import ListingProcessorFactory
+from src.CrawlerProcess.ListingProcessors.PageProccesor import PageProcessor
 from src.CrawlerProcess.URLConverter import URLConverter
 
 class Crawler:
@@ -33,8 +33,7 @@ class Crawler:
 
         self.results = ResultIntegrator()
         
-        ListingProcessorFactory.initialize_default_processors(self.navigation_strategy)
-        self.processor_factory = ListingProcessorFactory()
+        self.processor = PageProcessor(self.navigation_strategy, self.sources_rules)  # Default processor for listing pages
         
         self.num_threads = num_threads
         
@@ -204,8 +203,7 @@ class Crawler:
         - Otherwise, fall back to CSS selectors
         """
         try:
-            processor = self.processor_factory.get_processor(source_id)
-            product_urls = processor.extract_product_urls(html)
+            product_urls = self.processor.extract_product_urls(source_id,html)
             
             source_domain = self.sources_rules[source_id]["Source"]["Domain"]
             converter = URLConverter(source_domain)
@@ -225,8 +223,7 @@ class Crawler:
         extracted = {}  # Initialize to empty dict
         
         try:
-            processor = self.processor_factory.get_processor(source_id)
-            extracted = processor.extract_product_info(html)
+            extracted = self.processor.extract_product_info(source_id,html)
 
         except Exception as e:
             traceback.print_exc()
