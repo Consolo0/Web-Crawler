@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional
 from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
-from src.CrawlerProcess.ListingProcessors.DataExtractor import DataExtractor
+from CrawlerProcess.ResultIntegrator.DataExtractor.DataExtractor import DataExtractor
 from src.Enums.InfoType import InfoType
 
 
@@ -12,21 +12,25 @@ class ParisProcessor(AbstractListingProcessor):
     Product links are in <a> tags with id starting with "product-" 
     inside divs with data-cnstrc-item-id attribute.
     """
-    
+    def __init__(self, navigation_strategy) -> None:
+        super().__init__(navigation_strategy)
+        
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
         Extract product URLs from Paris listing pages.
         
         Looks for <a id="product-*"> tags which contain product URLs.
         """
-        if not html_content:
+        if not html_content or self.navigation_strategy.maximun_products_per_source - self.products_counter <= 0:
             return []
         
         soup = BeautifulSoup(html_content, "html.parser")
         urls = []
         
         # Find all product links by id pattern: id="product-..."
-        product_links = soup.select("a[id^='product-']")
+        remaining_slots = self.navigation_strategy.maximun_products_per_source - self.products_counter
+        product_links = soup.select(f"a[id^='product-']", limit=remaining_slots)
+        self.products_counter += len(product_links)
         
         for link in product_links:
             href = link.get("href")

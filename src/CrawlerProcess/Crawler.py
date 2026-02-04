@@ -13,7 +13,7 @@ from src.CrawlerProcess.URLConverter import URLConverter
 class Crawler:
 
     def __init__(self, navigator, sources_metadata, error_handler,
-        page_visit_handler, price_handler, stop_criteria, debug_mode=False, num_threads=4):
+        page_visit_handler, price_handler, stop_criteria, navigation_strategy, debug_mode=False, num_threads=4):
 
         self.navigator = navigator
         self.sources_rules = sources_metadata
@@ -21,6 +21,7 @@ class Crawler:
         self.page_visit_handler = page_visit_handler
         self.price_handler = price_handler
         self.cut_evaluator = CutEvaluator(stop_criteria)
+        self.navigation_strategy = navigation_strategy
         self.url_visited = set()
         self.fetcher = Fetcher()
 
@@ -29,87 +30,100 @@ class Crawler:
             self.debug_dir = Path("debug_html")
             self.debug_dir.mkdir(exist_ok=True)
             self.sources_and_types_visited = set()
+
         self.results = ResultIntegrator()
         
-        # Initialize the listing processors (JSON extraction for each website)
-        ListingProcessorFactory.initialize_default_processors()
+        ListingProcessorFactory.initialize_default_processors(self.navigation_strategy)
         self.processor_factory = ListingProcessorFactory()
         
-        # Threading configuration
         self.num_threads = num_threads
         
-        # Thread-safety locks for shared data structures
-        self.navigator_lock = threading.RLock()      # Protects: navigator.get_element(), navigator.add()
-        self.url_visited_lock = threading.Lock()     # Protects: url_visited set
-        self.visited_types_lock = threading.Lock()   # Protects: sources_and_types_visited set (debug mode)
-        self.results_lock = threading.Lock()         # Protects: results.add_result()
-        self.error_lock = threading.Lock()           # Protects: error_handler.add_element()
-        self.debug_lock = threading.Lock()           # Protects: file I/O in _save_debug_html()
+        self.navigator_lock = threading.RLock()   
+        self.url_visited_lock = threading.Lock()  
+        self.visited_types_lock = threading.Lock()
+        self.results_lock = threading.Lock()      
+        self.error_lock = threading.Lock()        
+        self.debug_lock = threading.Lock()        
 
     def crawl(self) -> ResultIntegrator:
         """
         Multi-threaded crawl using ThreadPoolExecutor.
         Each thread fetches and processes URLs independently.
         """
+
+        print(f"Navigator: {self.navigator}")
         with ThreadPoolExecutor(max_workers=self.num_threads) as executor:
             futures = set()
             
             while True:
-                # Check if we should continue
+
                 with self.error_lock:
                     if not self.cut_evaluator.should_continue(
                         self.error_handler.get_length()
                     ):
+                        print("Cut criteria met, stopping crawl.")
                         break
-                
-                # Fetch next work item from navigator (thread-safe)
+
+                got_item = False
                 with self.navigator_lock:
-                    if self.navigator.is_empty():
-                        break
-                    
-                    source_id, url, level, page_type = self.navigator.get_element()
-                
-                # Check if already visited (thread-safe set check)
-                with self.url_visited_lock:
-                    if url in self.url_visited:
-                        continue
-                
-                if self.debug_mode:
-                    with self.visited_types_lock:
-                        if (source_id, page_type) in self.sources_and_types_visited:
+
+                    if not self.navigator.is_empty() and len(futures) < self.num_threads:
+                        source_id, url, level, page_type = self.navigator.get_element()
+                        got_item = True
+
+                if got_item:
+
+                    with self.url_visited_lock:
+                        if url in self.url_visited:
+                            print(f"URL already visited, skipping: {url}")
                             continue
+                    
+                    if self.debug_mode:
+                        with self.visited_types_lock:
+                            if (source_id, page_type) in self.sources_and_types_visited:
+                                print(f"Debug mode: already visited source/type, skipping debug save: {source_id} | {page_type}")
+                                continue
+                    
+                    future = executor.submit(
+                        self._process_url,
+                        source_id, url, level, page_type
+                    )
+                    futures.add(future)
                 
-                # Submit work to thread pool
-                future = executor.submit(
-                    self._process_url,
-                    source_id, url, level, page_type
-                )
-                futures.add(future)
-                
-                # Keep futures set size reasonable (optional, for memory)
-                # Only wait if we have too many pending futures
-                if len(futures) >= self.num_threads * 2:
-                    # Wait for at least one to complete (with reasonable timeout for network)
-                    one_finished = False
+                if not got_item and futures:
+                    print(f"Navigator empty, waiting for {len(futures)} futures to complete...")
                     try:
-                        for future in as_completed(futures, timeout=30):  # 30s timeout for network requests
+                        for future in as_completed(futures, timeout=30):
                             try:
                                 future.result()
                             except Exception as e:
                                 traceback.print_exc()
                             finally:
                                 futures.discard(future)
-                                one_finished = True
-                            
-                            if one_finished:
-                                break
-                            
+                            break
                     except TimeoutError:
-                        # Even 30s passed, some futures still running - continue anyway
-                        # (they'll complete in the final wait)
+                        pass
+                    continue
+
+                if not got_item and not futures:
+                    print("Navigator is empty and no futures pending, stopping crawl.")
+                    break
+                
+                if len(futures) >= self.num_threads * 2:
+                    print(f"Too many futures ({len(futures)}), waiting for at least one to complete...")
+                    try:
+                        for future in as_completed(futures, timeout=30):
+                            try:
+                                future.result()
+                            except Exception as e:
+                                traceback.print_exc()
+                            finally:
+                                futures.discard(future)
+                            break
+                    except TimeoutError:
                         pass
             
-            # Wait for all remaining tasks to complete (no timeout - let them finish)
+            print(f"Main loop done, waiting for {len(futures)} remaining futures...")
             for future in as_completed(futures):
                 try:
                     future.result()

@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional
 from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
-from src.CrawlerProcess.ListingProcessors.DataExtractor import DataExtractor
+from CrawlerProcess.ResultIntegrator.DataExtractor.DataExtractor import DataExtractor
 from src.Enums.InfoType import InfoType
 
 
@@ -14,22 +14,28 @@ class MercadoLibreProcessor(AbstractListingProcessor):
     2. The href attribute contains the full product URL
     3. Extract all hrefs and return them
     """
+
+    def __init__(self, navigation_strategy):
+        super().__init__(navigation_strategy)
     
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
         Extract product URLs from MercadoLibre listing page using CSS selectors.
         """
+
+        if not html_content or self.navigation_strategy.maximun_products_per_source - self.products_counter <= 0:
+            return []
+        
         soup = BeautifulSoup(html_content, "html.parser")
         
-        # Find all product links: <a class="poly-component__title" href="...">
-        product_links = soup.select("a.poly-component__title")
+        remaining_slots = self.navigation_strategy.maximun_products_per_source - self.products_counter
+        product_links = soup.select(f"a[id^='product-']", limit=remaining_slots)
+        self.products_counter += len(product_links)
         
         urls = []
         for link in product_links:
             href = link.get("href")
             if href:
-                # Clean up the URL (remove tracking parameters if needed)
-                # The URL comes with #polycard_client=... but that's fine
                 urls.append(href)
         
         return urls

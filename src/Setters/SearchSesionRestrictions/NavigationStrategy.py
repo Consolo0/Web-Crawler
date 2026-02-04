@@ -7,6 +7,7 @@ class NavigationStrategy:
             strategy_params = {}
         self._type = strategy_params.get("type", NavigationStrategyType.BFS)
         self._maximum_depth = strategy_params.get("maximum_depth", 5)
+        self._maximun_products_per_source = strategy_params.get("maximum_products_per_source", 50)
 
     @property
     def type(self) -> str:
@@ -14,3 +15,6 @@ class NavigationStrategy:
     @property
     def maximum_depth(self) -> int:
         return self._maximum_depth
+    @property
+    def maximun_products_per_source(self) -> int:
+        return self._maximun_products_per_source

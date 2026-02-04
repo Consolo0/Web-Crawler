@@ -12,6 +12,10 @@ class AbstractListingProcessor(ABC):
     so we create a specific processor for each one.
     """
 
+    def __init__(self, navigation_strategy):
+        self.navigation_strategy = navigation_strategy
+        self.products_counter = 0
+
     @abstractmethod
     def extract_product_urls(self, html_content: str) -> List[str]:
         """
