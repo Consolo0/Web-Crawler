@@ -17,21 +17,15 @@ class URLGenerator:
         navigator = NavigatorOrchestrator.get_navigator(self.navigation_strategy.type)
         sources = self.sources_metadata.keys()
 
-        print("Sources to generate URLs for:", sources)
-
         for source in sources:
             rule_entry = self.sources_metadata[source]["NavRules"]
-            print("Processing source:", source, "with rules:", rule_entry)
             try:
                 source = rule_entry.get("AssociatedSource")
-                print("Generating URLs for source:", source)
                 
                 # Process search navigation rules
                 search_rule = rule_entry.get("search")
-                print("Search rule for source:", source, "is:", search_rule)
                 if search_rule:
                     query_param_mapping = search_rule.get("QueryParamMapping", {})
-                    print("Query parameter mapping for source:", source, "is:", query_param_mapping)
                     
                     if search_rule.get("PaginationType", "").lower() == "page":
                         max_pages = search_rule.get("MaxPages", 1)
@@ -53,7 +47,6 @@ class URLGenerator:
 
     def generate_search_url(self, nav_rule, query_param_mapping, page=None) -> str:
         initial_url = nav_rule["UrlTemplate"]
-        print("Initial URL template:", initial_url)
 
         search_config = query_param_mapping.get("search", {})
         search_location = search_config.get("location")
@@ -89,7 +82,5 @@ class URLGenerator:
             params_for_builder,
             page
         )
-
-        print("Generated search URL:", search_url_built)
-
+        
         return search_url_built

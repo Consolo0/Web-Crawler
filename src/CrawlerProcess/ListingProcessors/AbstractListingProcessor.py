@@ -13,7 +13,7 @@ class AbstractListingProcessor(ABC):
     so we create a specific processor for each one.
     """
 
-    def __init__(self, navigation_strategy, sources_rules):
+    def __init__(self, navigation_strategy, sources_rules) -> None:
         self.navigation_strategy = navigation_strategy
         self.sources_rules = sources_rules
         self.products_counter_per_source = defaultdict(lambda : 0)

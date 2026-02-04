@@ -1,9 +1,9 @@
+import traceback
 from typing import Optional
 import requests
 import time
 import random
 from playwright.sync_api import sync_playwright
-from bs4 import BeautifulSoup
 
 
 class Fetcher:
@@ -83,7 +83,7 @@ class Fetcher:
             response.raise_for_status()
             return response.text
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching {url}: {e}")
+            traceback.print_exc()
             return ""
 
     def _fetch_with_js(self, url: str) -> str:
@@ -135,7 +135,7 @@ class Fetcher:
                         )
                     except Exception as e2:
                         # If still timing out, just load what's there
-                        print(f"Timeout loading {url}: {e2}")
+                        traceback.print_exc()
                         pass
                 
                 # Simulate human behavior - scroll and wait
@@ -147,5 +147,5 @@ class Fetcher:
                 return html
         
         except Exception as e:
-            print(f"Error fetching with JS {url}: {e}")
+            traceback.print_exc()
             return ""
