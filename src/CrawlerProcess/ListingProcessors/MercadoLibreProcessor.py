@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional
 from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
-from CrawlerProcess.ResultIntegrator.DataExtractor.DataExtractor import DataExtractor
+from src.CrawlerProcess.ResultIntegrator.DataExtractor.DataExtractor import DataExtractor
 from src.Enums.InfoType import InfoType
 
 
