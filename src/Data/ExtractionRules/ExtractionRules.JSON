@@ -61,31 +61,59 @@
             "AssociatedSource": "FALABELLA",
             "ProductTitle": {
                 "1": {
+                    "Selector": "name",
+                    "Attribute": "json"
+                },
+                "2": {
                     "Selector": "h1",
                     "Attribute": "text"
                 }
             },
             "Price": {
                 "1": {
-                    "Selector": "[data-test='price'], .price, .product-price, [class*='price']",
-                    "Attribute": "text"
+                    "Selector": "offers",
+                    "SubSelector": "price",
+                    "Attribute": "json",
+                    "Comment": "Extracts minimum price from offers array (promotional price)"
+                },
+                "2": {
+                    "Selector": "span.copy, div[class*='prices'] span",
+                    "Attribute": "text",
+                    "Comment": "Fallback to HTML price elements"
                 }
             },
             "Stock": {
                 "1": {
-                    "Selector": "[data-test='availability'], .availability, [class*='stock']",
-                    "Attribute": "text"
+                    "Selector": "offers",
+                    "SubSelector": "availability",
+                    "Attribute": "json",
+                    "Comment": "Checks if ANY offer has InStock availability"
+                },
+                "2": {
+                    "Selector": "[class*='stock'], [class*='available'], .content",
+                    "Attribute": "text",
+                    "Comment": "Fallback: checks for 'agotado' or 'sin stock' in text"
                 }
             },
             "Rating": {
                 "1": {
-                    "Selector": "[data-test='rating'], .rating, [class*='rating']",
+                    "Selector": ".styles-module_rating__VKBa1, [class*='rating']:not([class*='container'])",
+                    "Attribute": "text",
+                    "Comment": "Falabella doesn't include aggregateRating in JSON-LD, must use HTML"
+                },
+                "2": {
+                    "Selector": ".rr-rating-stars, [data-test='rating']",
                     "Attribute": "text"
                 }
             },
             "Votes": {
                 "1": {
-                    "Selector": "[data-test='reviews'], .reviews, [class*='reviews']",
+                    "Selector": ".styles-module_reviewCount__3GFJ7, [class*='reviewCount']",
+                    "Attribute": "text",
+                    "Comment": "Extract review count from HTML like '(6)' or '(27)'"
+                },
+                "2": {
+                    "Selector": "[data-test='reviews'], .reviews",
                     "Attribute": "text"
                 }
             }
