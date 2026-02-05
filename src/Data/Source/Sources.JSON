@@ -11,7 +11,7 @@
             "ID": "FALABELLA",
             "Name": "Falabella",
             "Domain": "falabella.com",
-            "IsActive": true,
+            "IsActive": false,
             "RequireJS": true
         },
         {
