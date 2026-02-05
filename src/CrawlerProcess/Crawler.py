@@ -172,6 +172,12 @@ class Crawler:
                 self._save_debug_html(source_id, html, page_type)
             self.sources_and_types_visited.add((source_id, page_type))
     
+    def _save_debug_html(self, source_id, html, page_type):
+        filename = f"{source_id}_{page_type}.html"
+        filepath = self.debug_dir / filename
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(html)
+    
     def _process_listing_page_safe_and_save(self, source_id, html, level):
         """Thread-safe wrapper for listing page processing and saving"""
         product_urls = self._process_listing_page(source_id, html)
