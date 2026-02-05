@@ -73,48 +73,42 @@
                 "1": {
                     "Selector": "offers",
                     "SubSelector": "price",
-                    "Attribute": "json",
-                    "Comment": "Extracts minimum price from offers array (promotional price)"
+                    "Attribute": "json"
                 },
                 "2": {
-                    "Selector": "span.copy, div[class*='prices'] span",
-                    "Attribute": "text",
-                    "Comment": "Fallback to HTML price elements"
+                    "Selector": "[class*='prices-module_prices'], [class*='price-']",
+                    "Attribute": "text"
                 }
             },
             "Stock": {
                 "1": {
                     "Selector": "offers",
                     "SubSelector": "availability",
-                    "Attribute": "json",
-                    "Comment": "Checks if ANY offer has InStock availability"
+                    "Attribute": "json"
                 },
                 "2": {
-                    "Selector": "[class*='stock'], [class*='available'], .content",
-                    "Attribute": "text",
-                    "Comment": "Fallback: checks for 'agotado' or 'sin stock' in text"
+                    "Selector": "[class*='availability'], [data-test='availability']",
+                    "Attribute": "text"
                 }
             },
             "Rating": {
                 "1": {
-                    "Selector": ".styles-module_rating__VKBa1, [class*='rating']:not([class*='container'])",
-                    "Attribute": "text",
-                    "Comment": "Falabella doesn't include aggregateRating in JSON-LD, must use HTML"
+                "Selector": "[class*='ReviewStars'], [class*='rating'], [aria-label*='rating']",
+                "Attribute": "text"
                 },
                 "2": {
-                    "Selector": ".rr-rating-stars, [data-test='rating']",
-                    "Attribute": "text"
+                "Selector": "meta[itemprop='ratingValue']",
+                "Attribute": "content"
                 }
             },
             "Votes": {
                 "1": {
-                    "Selector": ".styles-module_reviewCount__3GFJ7, [class*='reviewCount']",
-                    "Attribute": "text",
-                    "Comment": "Extract review count from HTML like '(6)' or '(27)'"
+                "Selector": "[class*='ReviewStars'] + *, [class*='review-count']",
+                "Attribute": "text"
                 },
                 "2": {
-                    "Selector": "[data-test='reviews'], .reviews",
-                    "Attribute": "text"
+                "Selector": "meta[itemprop='reviewCount']",
+                "Attribute": "content"
                 }
             }
         },

@@ -11,7 +11,7 @@
             "ID": "FALABELLA",
             "Name": "Falabella",
             "Domain": "falabella.com",
-            "IsActive": false,
+            "IsActive": true,
             "RequireJS": true
         },
         {
@@ -32,7 +32,7 @@
             "ID": "LIDER",
             "Name": "Lider",
             "Domain": "lider.cl",
-            "IsActive": true,
+            "IsActive": false,
             "RequireJS": true
         }
     ]
