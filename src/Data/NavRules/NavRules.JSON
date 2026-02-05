@@ -189,7 +189,7 @@
                         }
                     }
                 },
-                "Selectors": "a[href*='/p/']",
+                "Selectors": "a[href*='/ip/']",
                 "Link": "href",
                 "PaginationType": "page",
                 "StartPage": 1,

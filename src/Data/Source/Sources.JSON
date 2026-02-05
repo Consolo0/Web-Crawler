@@ -32,7 +32,7 @@
             "ID": "LIDER",
             "Name": "Lider",
             "Domain": "lider.cl",
-            "IsActive": false,
+            "IsActive": true,
             "RequireJS": true
         }
     ]

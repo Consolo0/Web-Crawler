@@ -212,31 +212,31 @@
             "AssociatedSource": "LIDER",
             "ProductTitle": {
                 "1": {
-                    "Selector": "h1#main-title[itemprop='name']",
+                    "Selector": "h1#main-title",
                     "Attribute": "text"
                 }
             },
             "Price": {
                 "1": {
-                    "Selector": "span[itemprop='price'][data-fs-element='price']",
+                    "Selector": "span[itemprop='price']",
                     "Attribute": "text"
                 }
             },
             "Stock": {
                 "1": {
-                    "Selector": "button[data-fs-element='add-to-cart'], button:contains('Agregar')",
+                    "Selector": "div[data-testid^='fulfillmentLabel']",
                     "Attribute": "existence"
                 }
             },
             "Rating": {
                 "1": {
-                    "Selector": "span.rating-number",
+                    "Selector": "span.inline-flex i.ld-Star",
                     "Attribute": "text"
                 }
             },
             "Votes": {
                 "1": {
-                    "Selector": "span.total-reviews",
+                    "Selector": "span.ml1.f7.gray",
                     "Attribute": "text"
                 }
             }
