@@ -1,9 +1,22 @@
-from src.Controllers.Controller import Controller
-from src.Db.Db import Db
-query = input("Enter your search (be as specific as possible for better results):")
-restrictions = {}
-db = Db()
-controler = Controller(query, db)
-result = controler.run(restrictions)
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from src.Routes import router
 
-print(f"RESULTADDOS:\n{result}")
+app = FastAPI(
+    title="Web Crawler API",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(router, prefix="/api/v1", tags=["crawler"])
+
+@app.get("/")
+async def root():
+    return {"message": "Web Crawler API is running"}
