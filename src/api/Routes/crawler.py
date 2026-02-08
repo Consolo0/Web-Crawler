@@ -3,18 +3,15 @@ from pydantic import BaseModel
 from typing import Optional, Dict, Any
 import asyncio
 
-from src.Controllers.Controller import Controller
+from src.api.Controllers.Controller import Controller
 from src.Db.Db import Db
 
-# Router
 router = APIRouter()
 
-# Request model
 class CrawlerRequest(BaseModel):
     query: str
     restrictions: Optional[Dict[str, Any]] = {}
 
-# Database instance (singleton)
 db = Db()
 
 
