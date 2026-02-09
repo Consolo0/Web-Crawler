@@ -1,4 +1,4 @@
-from src.Controllers.AbstractController import AbstractController
+from .AbstractController import AbstractController
 from src.Db.Db import Db
 from src.Error.NotSuccesfullySaved import NotSuccesfullySaved
 from src.Handler.GeneralHandler import GeneralHandler
