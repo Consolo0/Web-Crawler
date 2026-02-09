@@ -14,12 +14,9 @@ class CrawlerRequest(BaseModel):
 
 db = Db()
 
-
 @router.post("/")
 async def crawl(request: CrawlerRequest):
-    """
-    Run crawler and return all results at once.
-    """
+    """Run crawler and return all results at once."""
     controller = Controller(request.query, db)
     result = await asyncio.to_thread(controller.run, request.restrictions)
     
@@ -29,12 +26,7 @@ async def crawl(request: CrawlerRequest):
         "results": result
     }
 
-
 @router.post("/stream")
 async def crawl_stream(request: CrawlerRequest):
-    """
-    Stream crawler results in real-time using Server-Sent Events.
-    """
-    return {
-        "status": "On Work"
-    }
+    """Stream crawler results in real-time using Server-Sent Events."""
+    return {"status": "On Work"}
