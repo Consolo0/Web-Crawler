@@ -12,7 +12,7 @@ const api = axios.create({
 
 export const crawl = async (query, restrictions = {}) => {
   try {
-    const response = await api.post('/crawl', {
+    const response = await api.post('/crawler', {
       query,
       restrictions,
     });
@@ -23,7 +23,7 @@ export const crawl = async (query, restrictions = {}) => {
 };
 
 export const crawlStream = async function* (query, restrictions = {}) {
-  const response = await fetch(`${API_URL}/api/${API_VERSION}/crawl/stream`, {
+  const response = await fetch(`${API_URL}/api/${API_VERSION}/crawler/stream`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
