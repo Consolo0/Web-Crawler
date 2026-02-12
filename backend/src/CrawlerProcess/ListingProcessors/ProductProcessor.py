@@ -4,6 +4,7 @@ from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import Abstra
 from src.CrawlerProcess.ResultIntegrator.DataExtractor.DataExtractor import DataExtractor
 from src.CrawlerProcess.URLConverter import URLConverter
 from src.Enums.InfoType import InfoType
+from src.CrawlerProcess.InfoExtractor.InfoExtractor import InfoExtractor
 import traceback
 
 class ProductProcessor(AbstractListingProcessor):
@@ -117,75 +118,28 @@ class ProductProcessor(AbstractListingProcessor):
         
         soup = BeautifulSoup(html, "html.parser")
         product_info = {}
-        
-        # Try to extract from JSON-LD structured data first
         json_ld_data = DataExtractor.extract_json_ld(soup)
-        
-        #Ectraction rules
         extraction_rules = self.sources_rules[source_id].get("ExtractionRules")
+        info_extractor = InfoExtractor(product_info, soup, json_ld_data, extraction_rules)
+
         # Extract Title
-        product_title_rules = extraction_rules.get("ProductTitle", {})
-
-        for priority in sorted(product_title_rules.keys(), key=lambda x: int(x)):   
-
-            if not InfoType.ProductTitle.value in product_info:
-                title = self.extract_product_title(soup, json_ld_data, priority, extraction_rules)
-                product_info[InfoType.ProductTitle.value] = title
-
-                if title:
-                    break
+        info_type_and_its_function = {
+            InfoType.ProductTitle.value: self.extract_product_title,
+            InfoType.Price.value: self.extract_product_price,
+            InfoType.Stock.value: self.extract_product_stock,
+            InfoType.Rating.value: self.extract_product_rating,
+            InfoType.Votes.value: self.extract_product_votes
+        }
         
-        # Extract Price
-        product_price_rules = extraction_rules.get("Price", {})
-
-        for priority in sorted(product_price_rules.keys(), key=lambda x: int(x)):
-
-            if not InfoType.Price.value in product_info:
-                price = self.extract_product_price(soup, json_ld_data, priority, extraction_rules)
-                product_info[InfoType.Price.value] = price
-                if price:
-                    break
-        
-        # Extract Stock (Availability)
-        product_stock_rules = extraction_rules.get("Stock", {})
-
-        for priority in sorted(product_stock_rules.keys(), key=lambda x: int(x)):
-
-            if not InfoType.Stock.value in product_info:
-                stock = self.extract_product_stock(soup, json_ld_data, priority, extraction_rules)
-                product_info[InfoType.Stock.value] = stock
-
-                if stock:
-                    break
-        
-        # Extract Rating
-        product_rating_rules = extraction_rules.get("Rating", {})
-
-        for priority in sorted(product_rating_rules.keys(), key=lambda x: int(x)):
-
-            if not InfoType.Rating.value in product_info:
-                rating_data = self.extract_product_rating(soup, json_ld_data, priority, extraction_rules)
-                product_info[InfoType.Rating.value] = rating_data
-
-                if rating_data:
-                    break
-        
-        # Extract Votes
-        for priority in sorted(product_rating_rules.keys(), key=lambda x: int(x)):
-
-            if not InfoType.Votes.value in product_info:
-                votes = self.extract_product_votes(soup, json_ld_data, priority, extraction_rules)
-                product_info[InfoType.Votes.value] = votes
-
-                if votes:
-                    break
+        for info_type, function_to_use in info_type_and_its_function.items():
+            info_extractor.extract_info_and_save_it(info_type, function_to_use)
         
         return product_info
     
     def extract_product_title(self, soup: BeautifulSoup, json_ld_data: Dict, priority: str, extraction_rules: Dict) -> str:
             
             title = None
-            product_title_rules = extraction_rules.get("ProductTitle", {})
+            product_title_rules = extraction_rules.get(InfoType.ProductTitle.value, {})
             rule = product_title_rules[priority]
             selector = rule.get("Selector")
             attribute = rule.get("Attribute")
@@ -203,7 +157,7 @@ class ProductProcessor(AbstractListingProcessor):
 
     def extract_product_price(self, soup: BeautifulSoup, json_ld_data: Dict, priority: str, extraction_rules: Dict):
         price = None
-        product_price_rules = extraction_rules.get("Price", {})
+        product_price_rules = extraction_rules.get(InfoType.Price.value, {})
         rule = product_price_rules[priority]
         selector = rule.get("Selector")
         attribute = rule.get("Attribute")
@@ -237,7 +191,7 @@ class ProductProcessor(AbstractListingProcessor):
     
     def extract_product_stock(self, soup: BeautifulSoup, json_ld_data: Dict, priority: str, extraction_rules: Dict):
         stock = None
-        product_stock_rules = extraction_rules.get("Stock", {})
+        product_stock_rules = extraction_rules.get(InfoType.Stock.value, {})
         rule = product_stock_rules[priority]
         selector = rule.get("Selector")
         attribute = rule.get("Attribute")
@@ -264,7 +218,7 @@ class ProductProcessor(AbstractListingProcessor):
     
     def extract_product_rating(self, soup: BeautifulSoup, json_ld_data: Dict, priority: str, extraction_rules: Dict):
         rating = None
-        product_rating_rules = extraction_rules.get("Rating", {})
+        product_rating_rules = extraction_rules.get(InfoType.Rating.value, {})
         rule = product_rating_rules[priority]
         selector = rule.get("Selector")
         attribute = rule.get("Attribute")
@@ -290,7 +244,7 @@ class ProductProcessor(AbstractListingProcessor):
     
     def extract_product_votes(self, soup: BeautifulSoup, json_ld_data: Dict, priority: str, extraction_rules: Dict):
         votes = None
-        product_votes_rules = extraction_rules.get("Votes", {})
+        product_votes_rules = extraction_rules.get(InfoType.Votes.value, {})
         rule = product_votes_rules[priority]
         selector = rule.get("Selector")
         attribute = rule.get("Attribute")
