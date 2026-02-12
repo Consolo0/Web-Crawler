@@ -3,6 +3,7 @@ from typing import Optional
 import requests
 import time
 import random
+import threading
 from playwright.sync_api import sync_playwright
 
 
@@ -19,14 +20,22 @@ class Fetcher:
             "AppleWebKit/537.36 (KHTML, like Gecko) "
             "Chrome/120.0.0.0 Safari/537.36"
         )
-        # Create session for connection pooling and cookie handling
-        self.session = requests.Session()
-        self.session.headers.update(self._get_realistic_headers())
         
-        # Delay between requests to avoid bot detection
+        # Thread-local storage for session and timing
+        self._thread_local = threading.local()
+        
+        # Delay configuration (these are read-only, so safe to share)
         self.min_delay = 1.0
         self.max_delay = 2.0
-        self.last_request_time = 0
+
+    def _get_session(self):
+        """Get or create thread-local session"""
+        if not hasattr(self._thread_local, 'session'):
+            self._thread_local.session = requests.Session()
+            self._thread_local.session.headers.update(self._get_realistic_headers())
+            self._thread_local.last_request_time = 0
+        
+        return self._thread_local.session
 
     def _get_realistic_headers(self) -> dict:
         """
@@ -51,18 +60,22 @@ class Fetcher:
         """
         Add random delay between requests to mimic human behavior.
         This helps avoid triggering bot detection.
+        Each thread has its own timing.
         """
-        elapsed = time.time() - self.last_request_time
+        # Ensure thread-local storage exists
+        if not hasattr(self._thread_local, 'last_request_time'):
+            self._thread_local.last_request_time = 0
+        
+        elapsed = time.time() - self._thread_local.last_request_time
         delay_needed = random.uniform(self.min_delay, self.max_delay)
         
         if elapsed < delay_needed:
             sleep_time = delay_needed - elapsed
             time.sleep(sleep_time)
         
-        self.last_request_time = time.time()
+        self._thread_local.last_request_time = time.time()
 
     def fetch(self, url: str, uses_js: bool) -> str:
-
         if uses_js:
             return self._fetch_with_js(url)
         return self._fetch_without_js(url)
@@ -75,7 +88,8 @@ class Fetcher:
         self._add_delay()
         
         try:
-            response = self.session.get(
+            session = self._get_session()  # Get thread-local session
+            response = session.get(
                 url,
                 timeout=self.timeout_seconds,
                 allow_redirects=True,
