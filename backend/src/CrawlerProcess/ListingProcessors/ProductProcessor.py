@@ -2,18 +2,80 @@ from typing import List, Dict
 from bs4 import BeautifulSoup
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 from src.CrawlerProcess.ResultIntegrator.DataExtractor.DataExtractor import DataExtractor
+from src.CrawlerProcess.URLConverter import URLConverter
 from src.Enums.InfoType import InfoType
+import traceback
 
-
-class PageProcessor(AbstractListingProcessor):
+class ProductProcessor(AbstractListingProcessor):
     """
     Processor for search listings and product pages.
     
     Product links are in <a> tags with id starting with "product-" 
     inside divs with data-cnstrc-item-id attribute.
     """
-    def __init__(self, navigation_strategy, sources_rules) -> None:
-        super().__init__(navigation_strategy, sources_rules)
+    def __init__(self, navigation_strategy, sources_rules, navigator, navigator_lock, results, results_lock) -> None:
+        super().__init__(navigation_strategy, sources_rules, results, results_lock)
+        self.navigator = navigator
+        self.navigator_lock = navigator_lock
+
+    def _process_listing_page_safe_and_save(self, source_id, html, level):
+        """Thread-safe wrapper for listing page processing and saving"""
+        product_urls = self._process_listing_page(source_id, html)
+
+        # Add product URLs to navigator (with lock)
+        with self.navigator_lock:
+            for product_url in product_urls:
+                self.navigator.add(
+                    source=source_id,
+                    url=product_url,
+                    level=level + 1,
+                    page_type="product"
+                )
+
+    def _process_listing_page(self, source_id, html):
+        """
+        Process a listing page to extract product links.
+        
+        This now uses the factory pattern to get the appropriate processor:
+        - If the source has a custom processor (JSON extraction), use it
+        - Otherwise, fall back to CSS selectors
+        """
+        try:
+            product_urls = self.extract_product_urls(source_id,html)
+            
+            source_domain = self.sources_rules[source_id]["Source"]["Domain"]
+            converter = URLConverter(source_domain)
+            absolute_urls = converter.to_absolute(product_urls)
+            
+            return absolute_urls
+        
+        except Exception as e:
+            traceback.print_exc()
+            return []
+    
+    def _process_product_page_safe_and_save(self, source_id, html, url):
+        """Thread-safe wrapper for product page processing"""
+        data = self._process_product_page(source_id, html)
+        
+        # Add results to ResultIntegrator (with lock)
+        with self.results_lock:
+            self.results.add_result(source_id, url, data)
+    
+    def _process_product_page(self, source_id, html):
+        """
+        Process a product page to extract product information.
+        Expects html as a string, converts to BeautifulSoup for parsing.
+        """
+        extracted = {}  # Initialize to empty dict
+        
+        try:
+            extracted = self.extract_product_info(source_id,html)
+
+        except Exception as e:
+            traceback.print_exc()
+            # extracted remains empty dict if exception occurs
+
+        return extracted
         
     def extract_product_urls(self, source_id: str, html_content: str) -> List[str]:
         """

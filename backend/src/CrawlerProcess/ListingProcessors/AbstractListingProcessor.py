@@ -13,9 +13,11 @@ class AbstractListingProcessor(ABC):
     so we create a specific processor for each one.
     """
 
-    def __init__(self, navigation_strategy, sources_rules) -> None:
+    def __init__(self, navigation_strategy, sources_rules, results, results_lock) -> None:
         self.navigation_strategy = navigation_strategy
         self.sources_rules = sources_rules
+        self.results = results
+        self.results_lock = results_lock
         self.products_counter_per_source = defaultdict(lambda : 0)
 
     @abstractmethod
@@ -43,26 +45,28 @@ class AbstractListingProcessor(ABC):
             Dictionary with InfoType enum keys and extracted values
         """
         pass
-    
-    def _extract_json_from_html(self, html_text: str, pattern: str) -> Optional[Dict]:
+
+    def _process_listing_page_safe_and_save(self, source_id, html, level):
+        """Thread-safe wrapper for listing page processing and saving"""
+        pass
+
+    def _process_listing_page(self, source_id, html):
         """
-        Helper: Extract JSON data from HTML using regex pattern.
+        Process a listing page to extract product links.
         
-        This is the KEY to extracting data from modern websites!
-        Most sites embed data as JSON in <script> tags.
-        
-        Args:
-            html_text: Raw HTML content
-            pattern: Regex pattern to find the JSON
-            
-        Returns:
-            Parsed JSON as dictionary, or None if not found
+        This now uses the factory pattern to get the appropriate processor:
+        - If the source has a custom processor (JSON extraction), use it
+        - Otherwise, fall back to CSS selectors
         """
-        try:
-            match = re.search(pattern, str(html_text), re.DOTALL)
-            if match:
-                json_str = match.group(1)
-                return json.loads(json_str)
-        except (json.JSONDecodeError, AttributeError, IndexError) as e:
-            traceback.print_exc()
-        return None
+        pass
+
+    def _process_product_page_safe_and_save(self, source_id, html, url):
+        """Thread-safe wrapper for product page processing"""
+        pass
+
+    def _process_product_page(self, source_id, html):
+        """
+        Process a product page to extract product information.
+        Expects html as a string, converts to BeautifulSoup for parsing.
+        """
+        pass
