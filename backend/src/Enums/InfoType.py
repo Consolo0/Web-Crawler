@@ -5,3 +5,4 @@ class InfoType(Enum):
     Rating = "Rating"
     Votes = "Votes"
     ProductTitle = "ProductTitle"
+    ProductChunk = "ProductChunk"
