@@ -182,7 +182,7 @@
             },
             "ProductChunk": {
                 "1": {
-                    "Selector": "div[data-testid='paris-vertical-pod']",
+                    "Selector": "div[role='gridcell']",
                     "Attribute": "html chunk"
                 }
             }
