@@ -182,7 +182,7 @@
             },
             "ProductChunk": {
                 "1": {
-                    "Selector": "div[role='gridcell']",
+                    "Selector": "div[role='gridcell'][data-cnstrc-item-id]",
                     "Attribute": "html chunk"
                 }
             }
