@@ -5,6 +5,7 @@ from typing import List
 from src.CrawlerProcess.InfoExtractor.InfoExtractor import InfoExtractor
 from src.Enums.InfoType import InfoType
 from src.Error.NotExpectedType import NotExpectedType
+from src.CrawlerProcess.URLConverter import URLConverter
 import webbrowser
 from pathlib import Path
 import traceback
@@ -15,9 +16,10 @@ class HtmlChunkProcessor(AbstractListingProcessor):
 
     No need to visit individual product pages.
     """
-    def __init__(self, navigation_strategy, sources_rules, results, results_lock) -> None:
+    def __init__(self, navigation_strategy, sources_rules, results, results_lock, debug_mode=False) -> None:
         super().__init__(navigation_strategy, sources_rules, results, results_lock)
         self.source_id = None
+        self.debug_mode = debug_mode
 
     def _process_product_page_safe_and_save(self, source_id, html, url):
         """Thread-safe wrapper for product page processing"""
@@ -84,13 +86,10 @@ class HtmlChunkProcessor(AbstractListingProcessor):
 
             for link in soup.find_all("link", rel="stylesheet"):
                 href = link.get("href")
+                
                 if href:
-                    if href.startswith("//"):
-                        href = "https:" + href
-                    elif href.startswith("/"):
-                        href = page_metadata["base_url"] + href
-                    elif not href.startswith("http"):
-                        href = page_metadata["base_url"] + "/" + href
+                    url_converter = URLConverter(self.sources_rules[self.source_id]["Source"]["Domain"])
+                    href = url_converter._convert_single(href)
                     page_metadata["stylesheets"].append(href)
 
             for style_tag in soup.find_all("style"):
@@ -114,7 +113,9 @@ class HtmlChunkProcessor(AbstractListingProcessor):
                 "metadata": page_metadata,
                 "products": products
             }
-            self.preview_html_in_browser(results)
+
+            if self.debug_mode:
+                self.preview_html_in_browser(results)
             return results
         
         raise NotExpectedType("html chunk", attribute)
@@ -135,55 +136,52 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         print("✅ Preview abierto en el navegador")
 
     def save_html_preview(self, chunk_data: dict, output_path: str = "preview.html"):
-        """
-        Guarda el HTML extraído en un archivo para visualizar en el browser.
-        """
         metadata = chunk_data.get("metadata", {})
         products = chunk_data.get("products", {})
-        
+
+        products_html = "".join([
+            f'<div class="product-wrapper">{html}</div>'
+            for html in products.values()
+        ])
+
         html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Preview - Products</title>
-        
-        <!-- Cargar CSS externos -->
-        {"".join([f'<link rel="stylesheet" href="{css}">' for css in metadata.get("stylesheets", [])])}
-        
-        <!-- Estilos inline -->
-        {"".join([f'<style>{style}</style>' for style in metadata.get("inline_styles", [])])}
-        
-        <style>
-            body {{
-                margin: 20px;
-                font-family: Arial, sans-serif;
-            }}
-            .product-container {{
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 20px;
-                padding: 20px;
-            }}
-            .product-wrapper {{
-                border: 2px solid #ddd;
-                padding: 10px;
-                border-radius: 8px;
-            }}
-        </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview - Products</title>
+
+    {"".join([f'<link rel="stylesheet" href="{css}">' for css in metadata.get("stylesheets", [])])}
+    {"".join([f'<style>{style}</style>' for style in metadata.get("inline_styles", [])])}
+
+    <style>
+    body {{
+        margin: 0;
+        padding: 20px;
+    }}
+
+    .product-container {{
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        width: 100%;
+    }}
+
+    .product-wrapper {{
+        width: 100%;
+        display: block;
+    }}
+    </style>
     </head>
     <body>
-        <h1>{f'Source: {self.source_id}'}</h1>
-        <div class="product-container">
-            {"".join([f'<div class="product-wrapper">{html}</div>' for html in products.values()])}
-        </div>
+    <h1>Source: {self.source_id}</h1>
+    <div class="product-container">
+    {products_html}
+    </div>
     </body>
     </html>
     """
-        
+
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
-        
-        print(f"✅ Preview guardado en: {output_path}")
-        print(f"   Abre el archivo en tu navegador para ver el resultado")
