@@ -12,7 +12,7 @@ from src.Enums.ProcessorType import ProcessorType
 class Crawler:
 
     def __init__(self, navigator, sources_metadata, error_handler,
-        page_visit_handler, price_handler, stop_criteria, navigation_strategy, processor_type=ProcessorType.ProductProcessor.value, debug_mode=False, num_threads=4):
+        page_visit_handler, price_handler, stop_criteria, navigation_strategy, processor_type=ProcessorType.HtmlChunkProcessor.value, debug_mode=False, num_threads=4):
 
         self.navigator = navigator
         self.sources_rules = sources_metadata

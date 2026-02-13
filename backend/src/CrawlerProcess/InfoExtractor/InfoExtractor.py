@@ -15,7 +15,12 @@ class InfoExtractor:
 
             if not info_type in self.product_info:
                 info = function_to_use(self.soup, self.json_ld_data, priority, self.extraction_rules)
-                self.product_info[info_type] = info
 
                 if info:
-                    break
+
+                    if info_type != InfoType.ProductChunk.value:
+                        self.product_info[info_type] = info
+
+                    else:
+                        self.product_info.update(info)
+                        break
