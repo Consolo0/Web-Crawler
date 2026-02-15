@@ -139,46 +139,80 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         metadata = chunk_data.get("metadata", {})
         products = chunk_data.get("products", {})
 
-        products_html = "".join([
-            f'<div class="product-wrapper">{html}</div>'
-            for html in products.values()
-        ])
+        products_html = "".join([html for html in products.values()])
 
         html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
     <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preview - Products</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Preview - Products</title>
 
-    {"".join([f'<link rel="stylesheet" href="{css}">' for css in metadata.get("stylesheets", [])])}
-    {"".join([f'<style>{style}</style>' for style in metadata.get("inline_styles", [])])}
+        {"".join([f'<link rel="stylesheet" href="{css}">' for css in metadata.get("stylesheets", [])])}
+        {"".join([f'<style>{style}</style>' for style in metadata.get("inline_styles", [])])}
 
-    <style>
-    body {{
-        margin: 0;
-        padding: 20px;
-    }}
+        <style>
+            * {{
+                box-sizing: border-box;
+            }}
 
-    .product-container {{
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-        width: 100%;
-    }}
+            body {{
+                margin: 0;
+                padding: 20px;
+                background: #f5f5f5;
+            }}
 
-    .product-wrapper {{
-        width: 100%;
-        display: block;
-    }}
-    </style>
+            h1 {{
+                margin-bottom: 20px;
+            }}
+
+            /* ✅ Grid with fixed-width columns */
+            .product-container {{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(240px, 250px));
+                gap: 16px;
+                width: 100%;
+                max-width: 1400px;
+                margin: 0 auto;
+                justify-content: start;
+            }}
+
+            /* ✅ Each product card constrained */
+            .product-container > * {{
+                width: 242px !important;
+                max-width: 242px !important;
+                min-width: 242px !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }}
+
+            /* ✅ Responsive: adjust for smaller screens */
+            @media (max-width: 1200px) {{
+                .product-container {{
+                    grid-template-columns: repeat(auto-fill, minmax(240px, 250px));
+                }}
+            }}
+
+            @media (max-width: 768px) {{
+                .product-container {{
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                }}
+                
+                .product-container > * {{
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    min-width: 200px !important;
+                }}
+            }}
+        </style>
     </head>
     <body>
-    <h1>Source: {self.source_id}</h1>
-    <div class="product-container">
-    {products_html}
-    </div>
+        <h1>Source: {self.source_id} ({len(products)} productos)</h1>
+        <div class="product-container">
+            {products_html}
+        </div>
     </body>
     </html>
     """
