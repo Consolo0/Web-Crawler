@@ -167,7 +167,6 @@ class HtmlChunkProcessor(AbstractListingProcessor):
                 margin-bottom: 20px;
             }}
 
-            /* ✅ Grid with fixed-width columns */
             .product-container {{
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(240px, 250px));
@@ -178,7 +177,6 @@ class HtmlChunkProcessor(AbstractListingProcessor):
                 justify-content: start;
             }}
 
-            /* ✅ Each product card constrained */
             .product-container > * {{
                 width: 242px !important;
                 max-width: 242px !important;
@@ -188,7 +186,6 @@ class HtmlChunkProcessor(AbstractListingProcessor):
                 overflow: visible !important;
             }}
 
-            /* ✅ Responsive: adjust for smaller screens */
             @media (max-width: 1200px) {{
                 .product-container {{
                     grid-template-columns: repeat(auto-fill, minmax(240px, 250px));
