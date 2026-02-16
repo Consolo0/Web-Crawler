@@ -133,7 +133,6 @@ class HtmlChunkProcessor(AbstractListingProcessor):
     
         # Abrir en el navegador
         webbrowser.open(f'file://{temp_file.absolute()}')
-        print("✅ Preview abierto en el navegador")
 
     def save_html_preview(self, chunk_data: dict, output_path: str = "preview.html"):
         metadata = chunk_data.get("metadata", {})

@@ -28,7 +28,6 @@ class URLProcessor:
         Process a single URL. This runs in a thread.
         Must use locks for all shared data structure access.
         """
-        print(f"Procesando el url={url}")
         source_ctx = self.sources_rules.get(source_id)
         
         if not source_ctx:
