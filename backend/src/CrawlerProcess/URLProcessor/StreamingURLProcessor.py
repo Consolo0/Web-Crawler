@@ -1,18 +1,17 @@
-from src.Error.NoHTML import NoHTML
-from src.CrawlerProcess.DebugHTMLSaver.DebugHTMLSaver import DebugHTMLSaver
-from pathlib import Path
+from src.CrawlerProcess.URLProcessor.AbstractUrlProcessor import AbstractURLProcessor
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
+from src.Error.NoHTML import NoHTML
 import traceback
 
-class URLProcessor:
+class StreamingURLProcessor(AbstractURLProcessor):
 
     def __init__(self, sources_rules, fetcher, url_visited, url_visited_lock, error_handler, error_lock, sources_and_types_visited, processor: AbstractListingProcessor, debug_mode=False):
         super().__init__(sources_rules, fetcher, url_visited, url_visited_lock, error_handler, error_lock, sources_and_types_visited, processor, debug_mode)
 
     def _process_url(self, source_id: str, url: str, level: int, page_type: str):
         """
-        Process a single URL. This runs in a thread.
-        Must use locks for all shared data structure access.
+        Process a single URL and yield results.
+        This is a generator that yields results as they're produced.
         """
         source_ctx = self.sources_rules.get(source_id)
         
@@ -41,12 +40,39 @@ class URLProcessor:
         with self.url_visited_lock:
             self.url_visited.add(url)
         
-        self._manage_info(page_type, source_id, html, level, url)
-    
+        # Yield results from _manage_info
+        yield from self._manage_info(page_type, source_id, html, level, url)
+
     def _manage_info(self, page_type, source_id, html, level, url):
+        """
+        Process page and yield results incrementally for streaming.
+        Calls processing methods directly (not the save versions) and yields data.
+        """
         # Process based on page type
         if page_type in ("search", "category"):
-            self.processor._process_listing_page_safe_and_save(source_id, html, level, url)
+            # Call the processing method directly (not the save version)
+            data = self.processor._process_listing_page(source_id, html)
+            
+            if data:
+                # Yield with metadata for the frontend to process
+                yield {
+                    "type": "listing_result",
+                    "source_id": source_id,
+                    "level": level,
+                    "url": url,
+                    "data": data,
+                    "products_count": len(data.get("products", {}))
+                }
         
         elif page_type == "product":
-            self.processor._process_product_page_safe_and_save(source_id, html, url)        
+            # Call the processing method directly (not the save version)
+            data = self.processor._process_product_page(source_id, html)
+            
+            if data:
+                # Yield with metadata
+                yield {
+                    "type": "product_result",
+                    "source_id": source_id,
+                    "url": url,
+                    "data": data
+                }
