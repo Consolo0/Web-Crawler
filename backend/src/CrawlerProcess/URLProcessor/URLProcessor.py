@@ -1,10 +1,9 @@
 from src.Error.NoHTML import NoHTML
-from src.CrawlerProcess.DebugHTMLSaver.DebugHTMLSaver import DebugHTMLSaver
-from pathlib import Path
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 import traceback
+from src.CrawlerProcess.URLProcessor.AbstractUrlProcessor import AbstractURLProcessor
 
-class URLProcessor:
+class URLProcessor(AbstractURLProcessor):
 
     def __init__(self, sources_rules, fetcher, url_visited, url_visited_lock, error_handler, error_lock, sources_and_types_visited, processor: AbstractListingProcessor, debug_mode=False):
         super().__init__(sources_rules, fetcher, url_visited, url_visited_lock, error_handler, error_lock, sources_and_types_visited, processor, debug_mode)

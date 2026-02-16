@@ -1,4 +1,4 @@
-from src.CrawlerProcess.ResultIntegrator import ResultIntegrator
+from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 from src.Enums.ProcessorType import ProcessorType
 from pathlib import Path
 from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
