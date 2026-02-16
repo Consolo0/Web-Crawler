@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import AdvancedSettings from './AdvancedSettings';
+import ResultsDisplay from './ResultsDisplay';
 import { crawl, crawlStream } from '../services/api';
 
 const SearchForm = () => {
@@ -174,12 +175,7 @@ const SearchForm = () => {
       </form>
 
       {/* Results Display */}
-      {results && (
-        <div className="results-container">
-          <h2>Results</h2>
-          <pre>{JSON.stringify(results, null, 2)}</pre>
-        </div>
-      )}
+      {results && <ResultsDisplay results={results} />}
 
       {/* Streaming Events Display */}
       {streamEvents.length > 0 && (

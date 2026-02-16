@@ -328,3 +328,113 @@ button {
     width: 100%;
   }
 }
+
+/* Results Display Styles */
+.results-display {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.results-display > h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+/* Source Section Styles */
+.source-section {
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.source-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.source-header:hover {
+  background: #e9ecef;
+}
+
+.expand-icon {
+  font-size: 12px;
+  margin-right: 12px;
+  color: #666;
+  transition: transform 0.2s;
+  display: inline-block;
+  width: 16px;
+}
+
+.source-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #2c3e50;
+  flex: 1;
+}
+
+.product-count {
+  font-size: 14px;
+  color: #666;
+  font-weight: 400;
+}
+
+/* Product Grid Container */
+.product-grid-container {
+  padding: 20px;
+  background: #fafafa;
+}
+
+.product-grid-container h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #495057;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .source-header {
+    padding: 12px 16px;
+  }
+
+  .source-name {
+    font-size: 16px;
+  }
+
+  .product-count {
+    font-size: 12px;
+  }
+
+  .product-grid-container {
+    padding: 16px;
+  }
+
+  .product-grid-container h4 {
+    font-size: 14px;
+  }
+}
+
+/* Loading and Empty States */
+.results-display .loading-state,
+.results-display .empty-state {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Ensure external styles don't leak */
+.product-grid-container {
+  isolation: isolate;
+}
