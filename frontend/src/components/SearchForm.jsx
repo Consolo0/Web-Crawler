@@ -48,11 +48,8 @@ const SearchForm = () => {
         await handleRegularCrawl();
       }
     } catch (error) {
-      console.error('Crawl error:', error);
-      toast.error(`Error: ${error.message || 'Something went wrong'}`, {
-        duration: 5000,
-        position: 'top-center',
-      });
+      // Errors are handled within each handler, this is just a safety net
+      console.error('Unexpected crawl error:', error);
     } finally {
       setIsLoading(false);
       setStreamProgress(null);
@@ -74,8 +71,17 @@ const SearchForm = () => {
         position: 'top-center',
       });
     } catch (error) {
-      toast.error('Crawl failed', { id: toastId });
-      throw error;
+      // Dismiss ALL toasts
+      toast.dismiss();
+      
+      // Show error toast
+      toast.error(`Crawl failed: ${error.message || 'Something went wrong'}`, {
+        duration: 5000,
+        position: 'top-center',
+      });
+      
+      // Don't re-throw to avoid duplicate error handling
+      console.error('Regular crawl error:', error);
     }
   };
 
@@ -143,6 +149,8 @@ const SearchForm = () => {
         } 
         
         else if (event.type === 'done') {
+          //Dismiss all toasts
+          toast.dismiss()
           // Crawl complete
           toast.success(
             `Streaming completed! ${event.total_products || totalProductsReceived} products found`, 
@@ -159,8 +167,15 @@ const SearchForm = () => {
       setResults(streamingResults);
       
     } catch (error) {
-      toast.error('Stream failed', { id: toastId });
-      throw error;
+      // Dismiss ALL toasts - this clears everything
+      toast.dismiss();
+      
+      // Show the error toast
+      toast.error(`Stream failed: ${error.message || 'Something went wrong'}`, {
+        duration: 5000,
+        position: 'top-center',
+      });
+
     }
   };
 
