@@ -54,13 +54,14 @@ class ProductProcessor(AbstractListingProcessor):
             traceback.print_exc()
             return []
     
-    def _process_product_page_safe_and_save(self, source_id, html, url):
+    def _process_product_page_safe_and_save(self, source_id, html, url) -> Dict:
         """Thread-safe wrapper for product page processing"""
         data = self._process_product_page(source_id, html)
         
         # Add results to ResultIntegrator (with lock)
         with self.results_lock:
             self.results.add_result(source_id, url, data)
+        return data
     
     def _process_product_page(self, source_id, html):
         """

@@ -45,7 +45,7 @@ class AbstractListingProcessor(ABC):
         """
         pass
 
-    def _process_listing_page_safe_and_save(self, source_id, html, level, url):
+    def _process_listing_page_safe_and_save(self, source_id, html, level, url) -> Dict:
         """Thread-safe wrapper for listing page processing and saving"""
         pass
 
@@ -59,7 +59,7 @@ class AbstractListingProcessor(ABC):
         """
         pass
 
-    def _process_product_page_safe_and_save(self, source_id, html, url):
+    def _process_product_page_safe_and_save(self, source_id, html, url) -> Dict:
         """Thread-safe wrapper for product page processing"""
         pass
 

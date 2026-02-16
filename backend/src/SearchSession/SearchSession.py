@@ -22,7 +22,7 @@ class SearchSession(AbstractSearchSession):
             navigator = url_generator.run()
 
             crawler = Crawler(navigator, sources_metadata, self.error_handler, self.page_visit_handler, self.price_handler, self.associated_stop_criteria, self.associated_navigation_strategy)
-            results = crawler.crawl() #lo que entrega muy probablemente cambie
+            results = crawler.crawl()
             self.status = SessionStatus.FINISHED
 
         except Exception as e:

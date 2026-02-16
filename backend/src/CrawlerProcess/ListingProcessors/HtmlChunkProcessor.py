@@ -21,7 +21,7 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         self.source_id = None
         self.debug_mode = debug_mode
 
-    def _process_product_page_safe_and_save(self, source_id, html, url):
+    def _process_product_page_safe_and_save(self, source_id, html, url) -> Dict:
         """Thread-safe wrapper for product page processing"""
         pass
     
@@ -32,14 +32,15 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         """
         pass
     
-    def _process_listing_page_safe_and_save(self, source_id, html, level, url):
+    def _process_listing_page_safe_and_save(self, source_id, html, level, url) -> Dict:
         data = self._process_listing_page(source_id, html)
 
         if data:
             with self.results_lock:
-                self.results.add_result(source_id=source_id, url=url, data=data)
+                self.results.add_result(source_id=source_id, url=url, data=data)             
+        return data
 
-    def _process_listing_page(self, source_id, html):
+    def _process_listing_page(self, source_id, html) -> Dict:
         """
         Process a listing page to extract product links.
         
@@ -52,7 +53,7 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         
         except Exception as e:
             traceback.print_exc()
-            return []
+            return {}
     
     def extract_product_info(self, source_id: str, html: str) -> Dict:
         """
