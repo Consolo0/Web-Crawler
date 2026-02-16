@@ -2,7 +2,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 from src.Enums.ProcessorType import ProcessorType
-from src.CrawlerProcess.Crawler import AbstractCrawler
+from src.CrawlerProcess.Crawler.AbstractCrawler import AbstractCrawler
 from src.CrawlerProcess.URLProcessor.URLProcessor import URLProcessor
 
 class Crawler(AbstractCrawler):

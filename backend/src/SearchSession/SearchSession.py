@@ -4,7 +4,7 @@ from src.SearchSession.Status.SessionStatus import SessionStatus
 from datetime import datetime
 from src.URLProvider.Sources.SourceOrchestator import SourceOrchestator
 from src.URLProvider.URL.URLGenerator import URLGenerator
-from backend.src.CrawlerProcess.Crawler.Crawler import Crawler
+from src.CrawlerProcess.Crawler.Crawler import Crawler
 from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 
 class SearchSession(AbstractSearchSession):
