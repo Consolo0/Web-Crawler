@@ -141,13 +141,6 @@ class StreamingCrawler(AbstractCrawler):
                     msg_type, data = self.result_queue.get()
                     
                     if msg_type == "result":
-                        # Also save to results for final return
-                        with self.results_lock:
-                            self.results.add_result(
-                                data["source_id"],
-                                data.get("level", data.get("url")),
-                                data["data"]
-                            )
                         yield data
                     
                     elif msg_type == "error":
@@ -184,12 +177,6 @@ class StreamingCrawler(AbstractCrawler):
                 msg_type, data = self.result_queue.get()
                 
                 if msg_type == "result":
-                    with self.results_lock:
-                        self.results.add_result(
-                            data["source_id"],
-                            data.get("level", data.get("url")),
-                            data["data"]
-                        )
                     yield data
                 
                 elif msg_type == "error":
