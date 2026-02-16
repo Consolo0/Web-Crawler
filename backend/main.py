@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.Routes import router
 from src.api.Middleware.ErrorMiddleware import ErrorMiddleware
@@ -22,4 +23,8 @@ app.include_router(router, prefix="/api/v1", tags=["crawler"])
 
 @app.get("/")
 async def root():
-    return {"message": "Web Crawler API is running"}
+    return {"message": "Q||__;Q_________ GOT EM HA"}
+
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("favicon.ico")
