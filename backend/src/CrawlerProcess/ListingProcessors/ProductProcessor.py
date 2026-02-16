@@ -19,7 +19,7 @@ class ProductProcessor(AbstractListingProcessor):
         self.navigator = navigator
         self.navigator_lock = navigator_lock
 
-    def _process_listing_page_safe_and_save(self, source_id, html, level):
+    def _process_listing_page_safe_and_save(self, source_id, html, level, url):
         """Thread-safe wrapper for listing page processing and saving"""
         product_urls = self._process_listing_page(source_id, html)
 

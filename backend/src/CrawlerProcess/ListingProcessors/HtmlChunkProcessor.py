@@ -32,12 +32,12 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         """
         pass
     
-    def _process_listing_page_safe_and_save(self, source_id, html, level):
+    def _process_listing_page_safe_and_save(self, source_id, html, level, url):
         data = self._process_listing_page(source_id, html)
 
         if data:
             with self.results_lock:
-                self.results.add_result(source_id, level, data)
+                self.results.add_result(source_id=source_id, url=url, data=data)
 
     def _process_listing_page(self, source_id, html):
         """
@@ -95,11 +95,19 @@ class HtmlChunkProcessor(AbstractListingProcessor):
             for style_tag in soup.find_all("style"):
                 if style_tag.string:
                     page_metadata["inline_styles"].append(style_tag.string)
+
+            # Atomically reserve slots to prevent race conditions
+            with self.products_counter_per_source_lock:
+                products_retrieved = self.products_counter_per_source[self.source_id]
+                remaining_slots = self.navigation_strategy.maximun_products_per_source - products_retrieved
+
+                if remaining_slots <= 0:
+                    return None
+                
+                # Reserve all remaining slots upfront - we'll release unused ones later
+                self.products_counter_per_source[self.source_id] = products_retrieved + remaining_slots
             
-            remaining_slots = self.navigation_strategy.maximun_products_per_source - self.products_counter_per_source[self.source_id]
-            if remaining_slots == 0:
-                return None
-            
+            # Extract products without holding the lock (extraction is slow)
             product_cards = soup.select(selector, limit=remaining_slots)
             
             products = {}
@@ -107,7 +115,12 @@ class HtmlChunkProcessor(AbstractListingProcessor):
                 html_string = str(card)
                 products[f"product_{i}"] = html_string
             
-            self.products_counter_per_source[self.source_id] += len(products)
+            # Adjust counter based on actual products extracted
+            actual_count = len(products)
+            if actual_count < remaining_slots:
+                with self.products_counter_per_source_lock:
+                    # Release unused reserved slots
+                    self.products_counter_per_source[self.source_id] -= (remaining_slots - actual_count)
 
             results = {
                 "metadata": page_metadata,

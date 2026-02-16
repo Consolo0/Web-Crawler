@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import List, Dict, Optional
-import json
-import re
-import traceback
+import threading
 
 class AbstractListingProcessor(ABC):
     """
@@ -19,6 +17,7 @@ class AbstractListingProcessor(ABC):
         self.results = results
         self.results_lock = results_lock
         self.products_counter_per_source = defaultdict(lambda : 0)
+        self.products_counter_per_source_lock = threading.Lock()
 
     @abstractmethod
     def extract_product_urls(self, source_id: str, html_content: str) -> List[str]:
@@ -46,7 +45,7 @@ class AbstractListingProcessor(ABC):
         """
         pass
 
-    def _process_listing_page_safe_and_save(self, source_id, html, level):
+    def _process_listing_page_safe_and_save(self, source_id, html, level, url):
         """Thread-safe wrapper for listing page processing and saving"""
         pass
 

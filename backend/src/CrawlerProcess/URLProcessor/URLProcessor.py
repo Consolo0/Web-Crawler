@@ -57,7 +57,7 @@ class URLProcessor:
         
         # Process based on page type
         if page_type in ("search", "category"):
-            self.processor._process_listing_page_safe_and_save(source_id, html, level)
+            self.processor._process_listing_page_safe_and_save(source_id, html, level, url)
         
         elif page_type == "product":
             self.processor._process_product_page_safe_and_save(source_id, html, url)
