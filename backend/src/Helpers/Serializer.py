@@ -2,7 +2,7 @@
 class Serializer:
 
     @staticmethod
-    def serialize_event(self, event: dict) -> dict:
+    def serialize_event(event: dict) -> dict:
         """
         Safely serialize event data for JSON encoding.
         Handles ResultIntegrator and other complex objects.

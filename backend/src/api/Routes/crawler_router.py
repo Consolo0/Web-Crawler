@@ -58,7 +58,7 @@ async def crawl_stream(request: CrawlerRequest):
         def run_crawler():
             """Run crawler in background thread and put results in queue."""
             try:
-                for event in controller.run_stream(request.restrictions):
+                for event in controller.run(request.restrictions):
                     result_queue.put(("event", event))
             except Exception as e:
                 import traceback
@@ -83,7 +83,7 @@ async def crawl_stream(request: CrawlerRequest):
                     
                     try:
                         # Serialize event data
-                        serialized_event = Serializer.serialize_event(event)
+                        serialized_event = Serializer.serialize_event(event=event)
                         
                         # Format as Server-Sent Event
                         event_type = serialized_event.get("type", "message")
