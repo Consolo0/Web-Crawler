@@ -115,7 +115,7 @@ class StreamingCrawler(AbstractCrawler):
                     
                     yield {
                         "type": "status",
-                        "message": f"Processing {source_id}: {url[:50]}...",
+                        "message": f"Processing {source_id}...",
                         "submitted": total_submitted,
                         "completed": total_completed
                     }
