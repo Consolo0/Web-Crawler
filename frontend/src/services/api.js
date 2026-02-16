@@ -37,24 +37,53 @@ export const crawlStream = async function* (query, restrictions = {}) {
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
+  let buffer = ''; // CRITICAL: Buffer to accumulate incomplete lines
 
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
 
-    const chunk = decoder.decode(value);
-    const lines = chunk.split('\n');
+      // Decode chunk and add to buffer
+      buffer += decoder.decode(value, { stream: true });
 
-    for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        try {
-          const data = JSON.parse(line.substring(6));
-          yield data;
-        } catch (e) {
-          console.error('Failed to parse SSE data:', e);
+      // Split by newlines
+      const lines = buffer.split('\n');
+      
+      // Keep the last incomplete line in buffer
+      buffer = lines.pop() || '';
+
+      // Process complete lines
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const jsonData = line.substring(6).trim();
+            if (jsonData) {
+              const data = JSON.parse(jsonData);
+              yield data;
+            }
+          } catch (e) {
+            console.error('Failed to parse SSE data:', line, e);
+          }
         }
+        // Ignore 'event:' lines and empty lines
       }
     }
+    
+    // Process any remaining data in buffer
+    if (buffer.trim() && buffer.startsWith('data: ')) {
+      try {
+        const jsonData = buffer.substring(6).trim();
+        if (jsonData) {
+          const data = JSON.parse(jsonData);
+          yield data;
+        }
+      } catch (e) {
+        console.error('Failed to parse final SSE data:', buffer, e);
+      }
+    }
+  } finally {
+    reader.releaseLock();
   }
 };
 

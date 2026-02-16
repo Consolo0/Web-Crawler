@@ -18,7 +18,7 @@ const SearchForm = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
-  const [streamEvents, setStreamEvents] = useState([]);
+  const [streamProgress, setStreamProgress] = useState(null);
   const [useStreaming, setUseStreaming] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -39,7 +39,7 @@ const SearchForm = () => {
 
     setIsLoading(true);
     setResults(null);
-    setStreamEvents([]);
+    setStreamProgress(null);
 
     try {
       if (useStreaming) {
@@ -55,6 +55,7 @@ const SearchForm = () => {
       });
     } finally {
       setIsLoading(false);
+      setStreamProgress(null);
     }
   };
 
@@ -83,21 +84,80 @@ const SearchForm = () => {
       position: 'top-center',
     });
 
-    try {
-      const events = [];
-      
-      for await (const event of crawlStream(query, restrictions)) {
-        events.push(event);
-        setStreamEvents([...events]);
+    // Initialize results structure to match regular API format
+    const streamingResults = {
+      results: {
+        results: {}
+      }
+    };
 
+    let totalProductsReceived = 0;
+
+    try {
+      for await (const event of crawlStream(query, restrictions)) {
+        
         if (event.type === 'status') {
-          toast.loading(event.message, { id: toastId });
-        } else if (event.type === 'result') {
-          toast.success('Results received!', { id: toastId, duration: 2000 });
-        } else if (event.type === 'done') {
-          toast.success('Streaming completed!', { id: toastId, duration: 3000 });
+          // Update progress toast
+          setStreamProgress({
+            message: event.message,
+            submitted: event.submitted,
+            completed: event.completed
+          });
+          toast.loading(`${event.message} (${event.completed}/${event.submitted})`, { id: toastId });
+        } 
+        
+        else if (event.type === 'listing_result') {
+          // Add listing results to the structure
+          const { source_id, level, data } = event;
+          
+          // Initialize source if doesn't exist
+          if (!streamingResults.results.results[source_id]) {
+            streamingResults.results.results[source_id] = {};
+          }
+          
+          // Add data at the appropriate level
+          streamingResults.results.results[source_id][level] = data;
+          
+          // Count products
+          const productsCount = Object.keys(data.products || {}).length;
+          totalProductsReceived += productsCount;
+          
+          // Update results to trigger re-render
+          setResults({ ...streamingResults });
+          
+          // Show toast for products received
+          toast.success(`${source_id}: ${productsCount} products received`, {
+            id: `${source_id}-${level}`,
+            duration: 2000,
+            position: 'top-center',
+          });
+        } 
+        
+        else if (event.type === 'error') {
+          // Show error toast
+          console.error('Stream error:', event);
+          toast.error(`Error from ${event.data?.source_id || 'crawler'}: ${event.data?.error || event.message}`, {
+            duration: 4000,
+            position: 'top-center',
+          });
+        } 
+        
+        else if (event.type === 'done') {
+          // Crawl complete
+          toast.success(
+            `Streaming completed! ${event.total_products || totalProductsReceived} products found`, 
+            {
+              id: toastId,
+              duration: 3000,
+              position: 'top-center',
+            }
+          );
         }
       }
+      
+      // Set final results
+      setResults(streamingResults);
+      
     } catch (error) {
       toast.error('Stream failed', { id: toastId });
       throw error;
@@ -107,7 +167,7 @@ const SearchForm = () => {
   const handleReset = () => {
     setQuery('');
     setResults(null);
-    setStreamEvents([]);
+    setStreamProgress(null);
     setRestrictions({
       stop_criteria: {
         maximum_errors: 5,
@@ -174,21 +234,32 @@ const SearchForm = () => {
         </div>
       </form>
 
-      {/* Results Display */}
-      {results && <ResultsDisplay results={results} />}
-
-      {/* Streaming Events Display */}
-      {streamEvents.length > 0 && (
-        <div className="results-container">
-          <h2>Stream Events</h2>
-          {streamEvents.map((event, index) => (
-            <div key={index} className="stream-event">
-              <span className="event-type">{event.type}</span>
-              <pre>{JSON.stringify(event, null, 2)}</pre>
-            </div>
-          ))}
+      {/* Stream Progress Display */}
+      {streamProgress && isLoading && (
+        <div className="stream-progress" style={{
+          marginTop: '20px',
+          padding: '15px',
+          background: '#f0f9ff',
+          border: '1px solid #0ea5e9',
+          borderRadius: '8px',
+        }}>
+          <h3 style={{ margin: '0 0 10px 0', color: '#0369a1' }}>Streaming Progress</h3>
+          <p style={{ margin: '5px 0', color: '#075985' }}>{streamProgress.message}</p>
+          <div style={{
+            display: 'flex',
+            gap: '20px',
+            marginTop: '10px',
+            fontSize: '14px',
+            color: '#0c4a6e'
+          }}>
+            <span>Submitted: {streamProgress.submitted}</span>
+            <span>Completed: {streamProgress.completed}</span>
+          </div>
         </div>
       )}
+
+      {/* Results Display - Works same as before! */}
+      {results && <ResultsDisplay results={results} />}
     </div>
   );
 };
