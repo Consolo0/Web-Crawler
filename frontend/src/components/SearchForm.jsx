@@ -19,7 +19,7 @@ const SearchForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [streamProgress, setStreamProgress] = useState(null);
-  const [useStreaming, setUseStreaming] = useState(false);
+  const [useStreaming, setUseStreaming] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
