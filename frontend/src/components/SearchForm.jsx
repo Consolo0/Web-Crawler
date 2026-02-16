@@ -13,7 +13,7 @@ const SearchForm = () => {
     navigation_strategy: {
       type: 'BFS',
       maximum_depth: 5,
-      maximum_products_per_source: 10,
+      maximum_products_per_source: 30,
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -114,15 +114,15 @@ const SearchForm = () => {
         
         else if (event.type === 'listing_result') {
           // Add listing results to the structure
-          const { source_id, level, data } = event;
+          const { source_id, url, data } = event;
           
           // Initialize source if doesn't exist
           if (!streamingResults.results.results[source_id]) {
             streamingResults.results.results[source_id] = {};
           }
           
-          // Add data at the appropriate level
-          streamingResults.results.results[source_id][level] = data;
+          // Add data at the appropriate url
+          streamingResults.results.results[source_id][url] = data;
           
           // Count products
           const productsCount = Object.keys(data.products || {}).length;
@@ -133,7 +133,7 @@ const SearchForm = () => {
           
           // Show toast for products received
           toast.success(`${source_id}: ${productsCount} products received`, {
-            id: `${source_id}-${level}`,
+            id: `${source_id}-${url}`,
             duration: 2000,
             position: 'top-center',
           });
