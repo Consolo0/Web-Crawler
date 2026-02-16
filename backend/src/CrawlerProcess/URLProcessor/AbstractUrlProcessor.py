@@ -1,10 +1,9 @@
-from src.Error.NoHTML import NoHTML
 from src.CrawlerProcess.DebugHTMLSaver.DebugHTMLSaver import DebugHTMLSaver
 from pathlib import Path
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
-import traceback
+from abc import ABC, abstractmethod
 
-class AbstractURLProcessor:
+class AbstractURLProcessor(ABC):
 
     def __init__(self, sources_rules, fetcher, url_visited, url_visited_lock, error_handler, error_lock, sources_and_types_visited, processor: AbstractListingProcessor, debug_mode=False):
         self.sources_rules = sources_rules
@@ -23,13 +22,15 @@ class AbstractURLProcessor:
         
         self.processor = processor
 
+    @abstractmethod
     def _process_url(self, source_id: str, url: str, level: int, page_type: str):
         """
         Process a single URL. This runs in a thread.
         Must use locks for all shared data structure access.
         """
         pass
-
+    
+    @abstractmethod
     def _manage_info(self, page_type, source_id, html, level, url):
         """
         Process page info according to the page type

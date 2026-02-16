@@ -44,11 +44,13 @@ class AbstractListingProcessor(ABC):
             Dictionary with InfoType enum keys and extracted values
         """
         pass
-
+    
+    @abstractmethod
     def _process_listing_page_safe_and_save(self, source_id, html, level, url) -> Dict:
         """Thread-safe wrapper for listing page processing and saving"""
         pass
-
+    
+    @abstractmethod
     def _process_listing_page(self, source_id, html):
         """
         Process a listing page to extract product links.
@@ -58,11 +60,13 @@ class AbstractListingProcessor(ABC):
         - Otherwise, fall back to CSS selectors
         """
         pass
-
+    
+    @abstractmethod
     def _process_product_page_safe_and_save(self, source_id, html, url) -> Dict:
         """Thread-safe wrapper for product page processing"""
         pass
-
+    
+    @abstractmethod
     def _process_product_page(self, source_id, html):
         """
         Process a product page to extract product information.

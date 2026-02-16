@@ -8,5 +8,5 @@ class AbstractController(ABC):
         self.db = db
 
     @abstractmethod
-    def run(self) -> dict:
+    def run(self, restrictions: dict) -> dict:
         pass
