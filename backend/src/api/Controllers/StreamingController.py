@@ -38,5 +38,5 @@ class StreamingController(AbstractController):
         )
         
         # Stream results
-        for event in search_session.execute_stream(self.db):
+        for event in search_session.execute(self.db):
             yield event
