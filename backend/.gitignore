@@ -1,5 +1,0 @@
-.env
-__pycache__/
-*.pyc
-*.html
-main_terminal.py

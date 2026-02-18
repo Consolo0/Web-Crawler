@@ -1,3 +1,4 @@
+#FRONT
 # Dependencies
 node_modules/
 /.pnp
@@ -52,8 +53,11 @@ Thumbs.db
 # Optional REPL history
 .node_repl_history
 
+#BACKEND
 .env
 __pycache__/
 *.pyc
 *.html
 main_terminal.py
+
+credentials/
