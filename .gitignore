@@ -8,7 +8,7 @@ node_modules/
 /coverage
 
 # Production
-/build
+*/build
 /dist
 
 # Environment Variables
