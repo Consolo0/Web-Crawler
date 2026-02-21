@@ -25,6 +25,10 @@ app.include_router(router, prefix="/api/v1", tags=["crawler"])
 async def root():
     return {"message": "Q||__;Q_________ GOT EM HA"}
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @app.get("/favicon.ico")
 async def favicon():
     return FileResponse("favicon.ico")
