@@ -2,7 +2,8 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 from dataclasses import is_dataclass, asdict
-from src.Error import MissingData, NotExpectedType
+from src.Error.MissingData import MissingData
+from src.Error.NotExpectedType import NotExpectedType
 
 class Db:
     def __init__(self):
