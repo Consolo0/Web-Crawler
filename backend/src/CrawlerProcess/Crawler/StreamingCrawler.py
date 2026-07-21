@@ -1,13 +1,7 @@
 import traceback
-import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from queue import Queue
-from pathlib import Path
-from src.CrawlerProcess.CutEvaluator.CutEvaluator import CutEvaluator
-from src.CrawlerProcess.Fetch.Fetcher import Fetcher
-from src.CrawlerProcess.ResultIntegrator.ResultIntegrator import ResultIntegrator
 from src.CrawlerProcess.URLProcessor.StreamingURLProcessor import StreamingURLProcessor
-from src.CrawlerProcess.ListingProcessors.ProcessorFactory import ProcessorFactory
 from src.Enums.ProcessorType import ProcessorType
 from src.CrawlerProcess.Crawler.AbstractCrawler import AbstractCrawler
 
@@ -191,5 +185,4 @@ class StreamingCrawler(AbstractCrawler):
                 "message": "All processing complete",
                 "submitted": total_submitted,
                 "completed": total_completed,
-                "results": self.results
             }
