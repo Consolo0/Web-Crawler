@@ -1,5 +1,79 @@
-This project intends to accomplish the next goal:
+# Web Crawler Backend
 
-"
-Design an extensible crawling and extraction system that can provide prices from chilean stores that can be comparable defined by an user input, supporting different strategies of discovering, verification, navegation and control of execution, with the ability to evolve to other search engines
-"
+[Breve descripción de una frase sobre qué hace este crawler y qué tecnologías principales usa, por ejemplo: FastAPI, Playwright y MongoDB].
+
+## 📋 Requisitos Previos
+
+* **Docker** instalado en tu equipo.
+* Cuenta activa en **MongoDB Atlas**.
+
+## ⚙️ Configuración del Entorno
+
+Clona el repositorio y crea un archivo `.env` en la raíz del proyecto basándote en el archivo de ejemplo:
+
+```env
+CLUSTER_NAME=
+ADMIN_DB_USERNAME=
+ADMIN_DB_PASSWORD=
+MONGO_HOST=
+```
+
+### 📁 Cómo obtener las credenciales de MongoDB Atlas
+
+Para conseguir estos datos, debes iniciar sesión en tu cuenta de **MongoDB Atlas** (la versión en la nube de MongoDB) y buscarlos en tu panel de control. Aquí tienes el paso a paso exacto para encontrar cada uno:
+
+#### 1. CLUSTER_NAME (Nombre del Cluster)
+Es el nombre que le diste a tu base de datos cuando la creaste.
+* **Dónde encontrarlo:** Entra a MongoDB Atlas. En el menú de la izquierda, haz clic en **Database**. Verás tu cluster en el centro de la pantalla. El nombre aparece en texto grande arriba a la izquierda del cuadro del cluster (por defecto suele llamarse `Cluster0`).
+
+#### 2. ADMIN_DB_USERNAME y ADMIN_DB_PASSWORD (Usuario y Contraseña)
+No son los datos con los que inicias sesión en la página web de MongoDB Atlas. Son las credenciales que creaste específicamente para que tu aplicación de Python se conecte a la base de datos.
+* **Dónde encontrarlos/crearlos:** 
+  1. En el menú de la izquierda, ve a **Security** -> **Database Access**.
+  2. Si ya tienes un usuario creado, verás su nombre (`ADMIN_DB_USERNAME`). Por seguridad, Atlas no te mostrará la contraseña.
+  3. Si no te acuerdas de la contraseña, haz clic en el botón **Edit** al lado del usuario, luego en **Edit Password**, escribe una nueva y dale a **Update User**.
+  4. Si no tienes ningún usuario, haz clic en el botón verde **Add New Database User**, asígnale el rol de **Atlas Admin** (o Read and Write), y define el usuario y contraseña que pondrás en tu `.env`.
+
+#### 3. MONGO_HOST (El enlace de conexión)
+Es la dirección del servidor web de tu base de datos en la nube.
+* **Dónde encontrarlo:**
+  1. Ve a **Database** en el menú de la izquierda.
+  2. Haz clic en el botón **Connect** que está junto a tu cluster.
+  3. Selecciona **Drivers** (o "Connect your application").
+  4. Selecciona **Python** como tu lenguaje.
+  5. Abajo verás una cadena de texto (URI) parecida a esta:
+     `mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/?...`
+  6. Tu `MONGO_HOST` es la parte que va **después del símbolo `@` y antes del signo `/?`**. En el ejemplo anterior, sería: `cluster0.abcde.mongodb.net`.
+
+#### ⚠️ ¡Paso obligatorio antes de probar! (IP Access List)
+Si tu Docker o tu código local no se pueden conectar a pesar de tener los datos correctos, suele ser por el firewall de MongoDB:
+1. En el menú de la izquierda, ve a **Security** -> **Network Access**.
+2. Haz clic en **Add IP Address**.
+3. Si estás desarrollando en tu casa, haz clic en **Add Current IP Address** (o elige **Allow Access From Anywhere / 0.0.0.0/0** si vas a usar Docker y quieres evitar bloqueos temporales).
+
+## 🚀 Ejecución con Docker
+
+Sigue estos pasos para compilar y levantar la aplicación en un contenedor aislado:
+
+1. **Construir la imagen:**
+   ```bash
+   docker build -t web-crawler-backend .
+   ```
+
+2. **Levantar el contenedor:**
+   ```bash
+   docker run -d -p 8000:8000 --shm-size=2gb --name crawler-api web-crawler-backend
+   ```
+   *Nota: Usamos `--shm-size=2gb` para evitar que el navegador Chromium de Playwright colapse por falta de memoria compartida.*
+
+3. **Acceder a la API:**
+   Abre tu navegador en `http://localhost:8000/docs` para ver e interactuar con la documentación interactiva de la API.
+
+## 🛠️ Endpoints Disponibles
+
+* `GET /` - Estado de la API.
+* `POST /crawl` - [Breve explicación de qué recibe y qué hace este endpoint].
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia [MIT / Tu Licencia].
