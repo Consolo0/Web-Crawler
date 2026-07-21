@@ -1,0 +1,55 @@
+# Crawler Frontend 🕷️
+
+Este es el frontend para la aplicación **Crawler**, desarrollado con **React** y configurado para interactuar con una API externa utilizando variables de entorno.
+
+## 🚀 Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado:
+* **Node.js** (versión 16 o superior recomendada)
+* **npm** (viene empaquetado con Node.js)
+
+## 🛠️ Configuración del Entorno
+
+La aplicación requiere configurar variables de entorno para comunicarse con la API. 
+
+1. Crea un archivo llamado `.env` en la raíz de este proyecto.
+2. Copia y pega las siguientes variables, reemplazando los valores de ejemplo por los tuyos:
+
+```env
+REACT_APP_API_URL=https://tuservidor.com
+REACT_APP_API_VERSION=v1
+```
+
+> ⚠️ **Nota:** El prefijo `REACT_APP_` es obligatorio para que React-Scripts reconozca las variables en el navegador. La aplicación construirá los endpoints bajo la estructura: `${REACT_APP_API_URL}/api/${REACT_APP_API_VERSION}/...`
+
+## 📦 Instalación
+
+Para instalar todas las dependencias del proyecto, ejecuta el siguiente comando en la terminal:
+
+```bash
+npm install
+```
+
+## 💻 Comandos Disponibles
+
+En el directorio del proyecto, puedes ejecutar los siguientes scripts:
+
+### `npm start`
+* Levanta la aplicación en modo de desarrollo.
+* Abre [http://localhost:3000](http://localhost:3000) para verla en tu navegador.
+* La página se recargará automáticamente si realizas cambios en el código.
+
+### `npm run build`
+* Compila la aplicación de forma optimizada para el entorno de producción.
+* Almacena los archivos listos para desplegar en la carpeta `build/`.
+* El build se optimiza y se minimiza para obtener el mejor rendimiento.
+
+## 🧰 Dependencias Principales
+
+El proyecto incluye las siguientes librerías clave:
+* **React & React-DOM**: Biblioteca principal para la interfaz de usuario.
+* **Axios**: Cliente HTTP para realizar las peticiones a la API del crawler.
+* **React Hot Toast**: Sistema de notificaciones ligeras y animadas para alertas en tiempo real.
+
+---
+Desarrollado para el proyecto **crawler-frontend**.
