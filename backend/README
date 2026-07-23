@@ -57,22 +57,18 @@ Sigue estos pasos para compilar y levantar la aplicación en un contenedor aisla
 
 1. **Construir la imagen:**
    ```bash
-   docker build -t web-crawler-backend .
+   docker build --no-cache -t web-crawler .
    ```
 
 2. **Levantar el contenedor:**
    ```bash
-   docker run -d -p 8000:8000 --shm-size=2gb --name crawler-api web-crawler-backend
+   docker run -p 8000:8000 --shm-size=2gb --env-file .env --name crawler-api web-crawler
    ```
    *Nota: Usamos `--shm-size=2gb` para evitar que el navegador Chromium de Playwright colapse por falta de memoria compartida.*
 
 3. **Acceder a la API:**
-   Abre tu navegador en `http://localhost:8000/docs` para ver e interactuar con la documentación interactiva de la API.
+   Abre tu navegador en `http://localhost:8000` para ver si se obtiene una respuesta exitosa
 
-## 🛠️ Endpoints Disponibles
-
-* `GET /` - Estado de la API.
-* `POST /crawl` - [Breve explicación de qué recibe y qué hace este endpoint].
 
 ## 📄 Licencia
 
