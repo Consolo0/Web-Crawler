@@ -52,17 +52,18 @@ class StreamingURLProcessor(AbstractURLProcessor):
         if page_type in ("search", "category"):
             # Call the processing method directly (not the save version)
             data = self.processor._process_listing_page(source_id, html)
+
+            success = "products" in data
+            data["status"] = "success" if success else "failed"
             
-            if data:
-                # Yield with metadata for the frontend to process
-                yield {
-                    "type": "listing_result",
-                    "source_id": source_id,
-                    "level": level,
-                    "url": url,
-                    "data": data,
-                    "products_count": len(data.get("products", {}))
-                }
+            yield {
+                "type": "listing_result",
+                "source_id": source_id,
+                "level": level,
+                "url": url,
+                "data": data,
+                "products_count": len(data.get("products", {})) if success else 0
+            }
         
         elif page_type == "product":
             # Call the processing method directly (not the save version)

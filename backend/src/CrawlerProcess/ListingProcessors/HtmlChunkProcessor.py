@@ -53,7 +53,7 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         
         except Exception as e:
             traceback.print_exc()
-            return {}
+            return {"metadata": {}, "raw_html": html}
     
     def extract_product_info(self, source_id: str, html: str) -> Dict:
         """
@@ -73,6 +73,9 @@ class HtmlChunkProcessor(AbstractListingProcessor):
         return html_chunks
     
     def extract_html_chunk(self, soup: BeautifulSoup, json_ld_data: Dict, priority: str, extraction_rules: Dict) -> Dict:
+        """
+        Extract the chunk based on the selector
+        """
         product_chunk_rules = extraction_rules.get(InfoType.ProductChunk.value, {})
         rule = product_chunk_rules[priority]
         selector = rule.get("Selector")
@@ -112,21 +115,30 @@ class HtmlChunkProcessor(AbstractListingProcessor):
             product_cards = soup.select(selector, limit=remaining_slots)
             
             products = {}
-            for i, card in enumerate(product_cards):
-                html_string = str(card)
-                products[f"product_{i}"] = html_string
-            
-            # Adjust counter based on actual products extracted
-            actual_count = len(products)
-            if actual_count < remaining_slots:
-                with self.products_counter_per_source_lock:
-                    # Release unused reserved slots
-                    self.products_counter_per_source[self.source_id] -= (remaining_slots - actual_count)
 
-            results = {
-                "metadata": page_metadata,
-                "products": products
-            }
+            if product_cards:
+
+                for i, card in enumerate(product_cards):
+                    html_string = str(card)
+                    products[f"product_{i}"] = html_string
+                
+                # Adjust counter based on actual products extracted
+                actual_count = len(products)
+                if actual_count < remaining_slots:
+                    with self.products_counter_per_source_lock:
+                        # Release unused reserved slots
+                        self.products_counter_per_source[self.source_id] -= (remaining_slots - actual_count)
+
+                results = {
+                    "metadata": page_metadata,
+                    "products": products
+                }
+
+            else:
+                results = {
+                    "metadata": page_metadata,
+                    "raw_html": str(soup)
+                }
 
             if self.debug_mode:
                 self.preview_html_in_browser(results)
