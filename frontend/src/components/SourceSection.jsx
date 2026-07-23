@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import ProductGrid from './ProductGrid';
 import FailedPagesGrid from './FailedPagesGrid';
+import MissingPagesGrid from './MissingPagesGrid';
+import { PageStatus } from '../enums/PageStatus';
 
 const SourceSection = ({ sourceName, sourceData }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showFailed, setShowFailed] = useState(false);
+  const [showMissing, setShowMissing] = useState(false);
 
   const allProducts = [];
   const metadata = {};
   const failedPages = [];
+  const missingPages = [];
 
   Object.entries(sourceData).forEach(([pageNum, pageData]) => {
-    if (pageData.status === 'failed') {
+    if (pageData.status === PageStatus.FAILED) {
       failedPages.push({ pageNum, html: pageData.raw_html, metadata: pageData.metadata });
+      return;
+    }
+
+    if (pageData.status === PageStatus.MISSING) {
+      missingPages.push({ pageNum });
       return;
     }
 
@@ -42,6 +51,11 @@ const SourceSection = ({ sourceName, sourceData }) => {
         {failedPages.length > 0 && (
           <span style={{ color: 'red', marginLeft: '8px' }}>
             ⚠ {failedPages.length} page(s) failed
+          </span>
+        )}
+        {missingPages.length > 0 && (
+          <span style={{ color: '#b7791f', marginLeft: '8px' }}>
+            ⚠ {missingPages.length} page(s) missing
           </span>
         )}
       </div>
@@ -74,6 +88,25 @@ const SourceSection = ({ sourceName, sourceData }) => {
 
               {showFailed && (
                 <FailedPagesGrid failedPages={failedPages} sourceName={sourceName} />
+              )}
+            </div>
+          )}
+
+          {/* Missing pages section */}
+          {missingPages.length > 0 && (
+            <div style={{ marginTop: '16px' }}>
+              <div
+                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                onClick={() => setShowMissing(!showMissing)}
+              >
+                <span>{showMissing ? '▼' : '▶'}</span>
+                <h4 style={{ color: '#b7791f', margin: 0 }}>
+                  ⚠ Missing pages ({missingPages.length})
+                </h4>
+              </div>
+
+              {showMissing && (
+                <MissingPagesGrid missingPages={missingPages} sourceName={sourceName} />
               )}
             </div>
           )}
