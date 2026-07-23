@@ -1,6 +1,7 @@
 from src.CrawlerProcess.URLProcessor.AbstractUrlProcessor import AbstractURLProcessor
 from src.CrawlerProcess.ListingProcessors.AbstractListingProcessor import AbstractListingProcessor
 from src.Error.NoHTML import NoHTML
+from src.Enums.PageStatus import PageStatus
 import traceback
 
 class StreamingURLProcessor(AbstractURLProcessor):
@@ -54,7 +55,14 @@ class StreamingURLProcessor(AbstractURLProcessor):
             data = self.processor._process_listing_page(source_id, html)
 
             success = "products" in data
-            data["status"] = "success" if success else "failed"
+            missing = data == {}
+
+            if success:
+                data["status"] = PageStatus.SUCCESS.value
+            elif missing:
+                data["status"] = PageStatus.MISSING.value
+            else:
+                data["status"] = PageStatus.FAILED.value
             
             yield {
                 "type": "listing_result",
