@@ -16,13 +16,19 @@ class Db:
         USER = os.getenv("ADMIN_DB_USERNAME")
         PASSWORD = os.getenv("ADMIN_DB_PASSWORD")
         HOST = os.getenv("MONGO_HOST")
+
+        if not all([DB_NAME, USER, PASSWORD, HOST]):
+            raise MissingData("Faltan variables de entorno esenciales en el archivo .env: \n" \
+            f"CLUSTER_NAME= {DB_NAME} \
+            ADMIN_DB_USERNAME={USER} \
+            ADMIN_DB_PASSWORD={PASSWORD} \
+            MONGO_HOST={HOST}"
+            )
+        
         MONGO_URI = (
             f"mongodb+srv://{USER}:{PASSWORD}@{HOST}/"
             f"?retryWrites=true&w=majority&appName={DB_NAME}"
         )
-
-        if not MONGO_URI or not DB_NAME:
-            raise MissingData("Faltan variables en el .env")
 
         client = MongoClient(MONGO_URI)
         db = client[DB_NAME]
