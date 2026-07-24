@@ -117,11 +117,43 @@ class HtmlChunkProcessor(AbstractListingProcessor):
             products = {}
 
             if product_cards:
-
                 for i, card in enumerate(product_cards):
-                    html_string = str(card)
-                    products[f"product_{i}"] = html_string
-                
+                    card_soup = BeautifulSoup(str(card), "html.parser")
+                    url_converter = URLConverter(self.sources_rules[self.source_id]["Source"]["Domain"])
+
+                    # Fix all relative hrefs
+                    for a_tag in card_soup.find_all("a", href=True):
+                        a_tag["href"] = url_converter._convert_single(a_tag["href"])
+                        a_tag["target"] = "_blank"
+                        a_tag["rel"] = "noopener noreferrer"
+
+                    # Fix all images
+                    for img_tag in card_soup.find_all("img"):
+                        img_tag["loading"] = "eager"
+                        classes = [c for c in img_tag.get("class", []) if c not in ("ui-opacity-0", "ui-absolute")]
+                        img_tag["class"] = classes
+                        if not img_tag.get("src"):
+                            img_tag["src"] = (
+                                img_tag.get("data-src") or
+                                img_tag.get("data-lazy-src") or
+                                img_tag.get("data-original")
+                            )
+
+                    # Remove skeletons
+                    for skeleton in card_soup.find_all("div", attrs={"data-testid": "paris-skeleton"}):
+                        skeleton.decompose()
+                    for skeleton in card_soup.find_all("div", class_=lambda c: c and "skeleton" in " ".join(c)):
+                        skeleton.decompose()
+
+                    first_img = card_soup.find("img")
+                    first_a = card_soup.find("a", href=True)
+
+                    products[f"product_{i}"] = {
+                        "html": str(card_soup),
+                        "image": first_img.get("src") if first_img else None,
+                        "href": first_a.get("href") if first_a else None
+                    }
+
                 # Adjust counter based on actual products extracted
                 actual_count = len(products)
                 if actual_count < remaining_slots:

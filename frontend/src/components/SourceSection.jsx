@@ -32,10 +32,12 @@ const SourceSection = ({ sourceName, sourceData }) => {
     }
 
     if (pageData.products) {
-      Object.entries(pageData.products).forEach(([productKey, productHtml]) => {
+      Object.entries(pageData.products).forEach(([productKey, productData]) => {
         allProducts.push({
           key: `${pageNum}_${productKey}`,
-          html: productHtml,
+          html: productData.html,
+          image: productData.image,
+          href: productData.href,
           page: pageNum
         });
       });
